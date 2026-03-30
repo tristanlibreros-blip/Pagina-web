@@ -1,0 +1,42 @@
+body{
+  font-family: 'nunito', sans-serif;
+  font-size: 20px;
+}
+.header{
+  background-color: black;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  height: 85px;
+  padding: 5px 10%;
+}
+.header .logo{
+  cursor: pointer;
+  margin-right: auto;
+}
+.header .logo img{
+  width: 60px;
+  height: auto;
+  transition: all 0.3s;
+}
+.header .logo img:hover{
+  transform: scale(1.2);
+}
+.header .nav-links{
+  list-style: none;
+}
+.header .nav-links li{
+  display: inline-block;
+  padding: 0 20px;
+}
+.header .nav-links li:hover{
+  transform: scale(1.1);
+}
+.header .nav-links a{
+  font-size: 16px;
+  text-decoration: none;
+  color: white;
+}
+.header .nav-links li a:hover{
+  color: #ffcc00;
+}
