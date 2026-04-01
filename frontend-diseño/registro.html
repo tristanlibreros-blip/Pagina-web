@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChambaTec</title>
+    <link rel="stylesheet" href="css/estilos.css">
+   
+</head>
+<body class="cuerpo">
+    <div class="contenedor">
+        <div class="titulo">Registro</div>
+        <form id="validacion" novalidate>
+            <div class="registro">
+                <span>Nombre</span>
+                <input type="text" name="nombre" id="nombre" placeholder="Ingrese nombre" required>
+                <small>Por favor, ingrese su nombre</small>
+            </div>
+            <div class="registro">
+                <span>Usuario</span>
+                <input type="text" name="usuario" id="usuario" placeholder="Ingrese usuario" required>
+                <small>Por favor, ingrese su usuario</small>
+            </div>
+            <div class="registro">
+                <span>Email</span>
+                <input type="email" name="email" id="email" placeholder="Ingrese email" required>
+                <small>Por favor, ingrese su email</small>
+            </div>
+            <div class="registro">
+                <span>Telefono</span>
+                <input type="number" name="telefono" id="telefono" placeholder="Ingrese telefono" required>
+                <small>Por favor, ingrese su telefono</small>
+            </div>
+            <div class="registro">
+                <span>Contraseña</span>
+                <input type="password" name="contrasena" id="contrasena" placeholder="Ingrese contraseña" required>
+                <small>Por favor, ingrese su contraseña</small>
+            </div>
+            <div class="registro">
+                <span>Confirmar Contraseña</span>
+                <input type="password" name="confirmar_contrasena" id="confirmar_contrasena" placeholder="Ingrese contraseña" required>
+                <small>Por favor, confirme su contraseña</small>
+            </div>
+            <div class="boton">
+                <input type="submit" value="Registrarse">
+            </div>
+        </form>
+    </div>
+    <script src="js/registro.js"></script>
+</body>
+</html>

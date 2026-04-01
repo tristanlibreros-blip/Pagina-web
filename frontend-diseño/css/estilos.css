@@ -103,3 +103,98 @@ input[type="submit"]:hover{
 .registrarse a:hover{
   text-decoration: underline;
 }
+/* Registro */
+small{
+  display: none;
+}
+.cuerpo{
+  display: flex;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  background: linear-gradient(130deg, skyblue, blue);
+}
+.contenedor{
+  max-width: 700px;
+  width: 100%;
+  padding: 25px 30px;
+  background-color: white;
+  border-radius: 5px;
+}
+.contenedor .titulo{
+  font-size: 25px;
+  font-weight: 500;
+}
+.contenedor form{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin: 10px 12px 0;
+}
+form .registro{
+  margin-bottom: 15px;
+  width: calc(100%/2 - 20px);
+}
+form span{
+  display: block;
+  font-weight: 500;
+  margin-bottom: 5px;
+}
+.registro input{
+  height: 40px;
+  width: 100%;
+  outline: none;
+  border-radius: 5px;
+  border: 1px solid rgb(133, 129, 129);
+  padding-left: 15px;
+  border-bottom-width: 2.5px;
+  transition: all 0.3s ease;
+}
+.registro input:focus,
+.registro input:valid{
+  border-color: skyblue;
+}
+form .boton{
+  width: 100%;
+  height: 40px;
+  margin: 40px 0;
+}
+form .boton input{
+  width: 100%;
+  height: 100%;
+  outline: none;
+  cursor: pointer;
+  background: linear-gradient(130deg, blue, skyblue);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: 500;
+}
+form .boton input:hover{
+  background: linear-gradient(130deg, skyblue, blue);
+}
+.was-validated small{
+  display: block;
+  color: red;
+}
+@media(max-width: 584px){
+  .contenedor{
+    max-width: 100%;
+  }
+  form .registro{
+    margin-bottom: 15px;
+    width: 100%;
+  }
+  .contenedor form{
+    max-height: 400px;
+    overflow-y: scroll;
+  }
+  .contenedor form::-webkit-scrollbar{
+    width: 0;
+  }
+  form .boton{
+    margin: 20px 0;
+  }
+}
