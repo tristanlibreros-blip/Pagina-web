@@ -1,6 +1,8 @@
-body{
+*{
   font-family: 'nunito', sans-serif;
-  font-size: 20px;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 /* Index */
 .header{
@@ -40,6 +42,88 @@ body{
 }
 .header .nav-links li a:hover{
   color: #ffcc00;
+}
+/*carrusel*/
+.carrusel{
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(130deg, skyblue, blue);
+  padding: 40px 60px; 
+}
+.slider-wrapper{
+  position: relative;
+  overflow: hidden;
+  padding-bottom: 40px;  /* ← espacio para los puntos */
+  margin-top: 0 70px 55px;
+  max-width: 1200px;
+}
+.swiper-pagination{
+  position: relative;
+  margin-top: 20px;
+}
+.swiper-pagination-bullet{
+  background: white;
+  opacity: 0.7;
+}
+.swiper-pagination-bullet-active{
+  background: white;
+  opacity: 1;
+}
+.swiper-button-prev,
+.swiper-button-next{
+  color: white;
+  top: 50%;
+}
+.swiper-button-prev{
+  left: -20%; /* ← más pegada a la izquierda */
+}
+.swiper-button-next{
+  right: -20%; /* ← más pegada a la derecha */
+}
+.lista .items{
+  width: 400px;
+  padding: 35px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  backdrop-filter: blur(30px);
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+.lista .items .usuario-img{
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  margin-bottom: 40px;
+  border: 3px solid black;
+  padding: 4px;
+}
+.lista .items .usuario-profesion{
+  font-size: 1.15rem;
+  color: white;
+  font-weight: 500;
+  margin: 14px 0 40px;
+}
+.lista .items .mensaje{
+  font-size: 1.25rem;
+  padding: 10px 35px;
+  color: black;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  background: white;
+  border: 1px solid transparent;
+  transition: 0.2s ease;
+}
+.lista .items .mensaje:hover{
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid white;
+  color: white;
 }
 /* Login */
 .formulario{
