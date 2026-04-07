@@ -26,42 +26,24 @@
     <div class="carrusel swiper">
         <div class="slider-wrapper">
             <div class="lista swiper-wrapper">
-                <div class="items swiper-slide">
-                    <img src="gato.jpg" alt="User" class="usuario-img">
-                    <h2 class="usuario-name">Gato Chambeador</h2>
-                    <p class="usuario-profesion">Desarrollador Web</p>
-                    <button class="mensaje">Enviar Mensaje</button>
-                </div>
-                <div class="items swiper-slide">
-                    <img src="gato.jpg" alt="User" class="usuario-img">
-                    <h2 class="usuario-name">Gato Chambeador</h2>
-                    <p class="usuario-profesion">Desarrollador Web</p>
-                    <button class="mensaje">Enviar Mensaje</button>
-                </div>
-                <div class="items swiper-slide">
-                    <img src="gato.jpg" alt="User" class="usuario-img">
-                    <h2 class="usuario-name">Gato Chambeador</h2>
-                    <p class="usuario-profesion">Desarrollador Web</p>
-                    <button class="mensaje">Enviar Mensaje</button>
-                </div>
-                <div class="items swiper-slide">
-                    <img src="gato.jpg" alt="User" class="usuario-img">
-                    <h2 class="usuario-name">Gato Chambeador</h2>
-                    <p class="usuario-profesion">Desarrollador Web</p>
-                    <button class="mensaje">Enviar Mensaje</button>
-                </div>
-                <div class="items swiper-slide">
-                    <img src="gato.jpg" alt="User" class="usuario-img">
-                    <h2 class="usuario-name">Gato Chambeador</h2>
-                    <p class="usuario-profesion">Desarrollador Web</p>
-                    <button class="mensaje">Enviar Mensaje</button>
-                </div>
+                
             </div>
             
             <div class="swiper-pagination"></div>
             <div class="swiper-button-prev"></div>
             <div class="swiper-button-next"></div>
         </div>
+    </div>
+        <!-- Modal de solicitud -->
+    <div class="modal-fondo" id="modal-fondo">
+    <div class="modal">
+        <h2>Enviar Solicitud a <span id="nombre-dev"></span></h2>
+        <textarea id="descripcion" placeholder="Describe lo que necesitas..."></textarea>
+        <div class="modal-botones">
+            <button class="btn-enviar" onclick="enviarSolicitud()">Enviar</button>
+            <button class="btn-cancelar" onclick="cerrarModal()">Cancelar</button>
+        </div>
+    </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.js"></script>
