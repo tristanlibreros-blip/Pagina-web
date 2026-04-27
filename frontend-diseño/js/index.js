@@ -21,7 +21,7 @@ desarrolladores.forEach(dev => {
          <h2 class="usuario-name">${dev.nombre}</h2>
          <p class="usuario-profesion">${dev.profesion}</p>
          <p class="usuario-estrellas">⭐ ${dev.estrellas}</p>
-         <button class="mensaje" onclick="abrirModal('${dev.nombre}')">
+         <button class="btn-mensaje" onclick="abrirModal('${dev.nombre}')">
             Enviar Mensaje
          </button>
       </div>

@@ -1,8 +1,192 @@
-/*Aqui se ocupa que aparezca el las peticiones para el dev,
-y que el dev pueda aceptar o rechazar la peticion o aceptar,
-ademas de que el dev pueda ver los detalles de la peticion, 
-como la descripcion y el nombre del cliente, y por ultimo,
-que aparezca en la interfaz poder mandar los avances del trabajo,
-pueden usar datos de prueba para empezar para ver como funcionaria,
-preferiblemente que tenga 2 pestañas una donde acepte y mande los avances
-y otra como cliente para que califique al dev, y poder ver los avances*/
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChambaTec - Dashboard</title>
+    <link rel="stylesheet" href="../frontend-diseño/css/estilos.css">
+</head>
+<body class="dashboard-body">
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">
+            <img src="../frontend-diseño/gato.jpg" alt="ChambaTec">
+        </div>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="../frontend-diseño/index.html">Inicio</a></li>
+                <li><a href="#" id="nombre-usuario">Perfil</a></li>
+                <li><a href="#" onclick="cerrarSesion()">Cerrar sesión</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="dashboard-container">
+
+        <!-- Pestañas -->
+        <div class="pestanas">
+            <button class="pestana activa" onclick="cambiarPestana('desarrollador', this)">
+                Desarrollador
+            </button>
+            <button class="pestana" onclick="cambiarPestana('cliente', this)">
+                Cliente
+            </button>
+        </div>
+
+        <!-- ===== PESTAÑA DESARROLLADOR ===== -->
+        <div class="contenido-pestana activo" id="pestana-desarrollador">
+
+            <!-- Solicitudes recibidas -->
+            <div class="seccion">
+                <h2>Solicitudes Recibidas</h2>
+                <div id="lista-solicitudes-dev">
+                    <!-- Datos de prueba -->
+                    <div class="solicitud-card">
+                        <div class="solicitud-info">
+                            <h3>Juan Pérez</h3>
+                            <p>Necesito una tienda en línea para mi negocio de ropa</p>
+                            <p style="margin-top:5px; font-size:0.8rem; color:#aaa">Hace 2 horas</p>
+                        </div>
+                        <div class="solicitud-botones">
+                            <button class="btn btn-azul" onclick="verDetalles('Juan Pérez', 'Necesito una tienda en línea para mi negocio de ropa')">Ver más</button>
+                            <button class="btn btn-verde" onclick="responderSolicitud(this, 'aceptada')">Aceptar ✅</button>
+                            <button class="btn btn-rojo" onclick="responderSolicitud(this, 'rechazada')">Rechazar ❌</button>
+                        </div>
+                    </div>
+                    <div class="solicitud-card">
+                        <div class="solicitud-info">
+                            <h3>María García</h3>
+                            <p>Quiero un portafolio profesional para mostrar mis trabajos</p>
+                            <p style="margin-top:5px; font-size:0.8rem; color:#aaa">Hace 1 día</p>
+                        </div>
+                        <div class="solicitud-botones">
+                            <button class="btn btn-azul" onclick="verDetalles('María García', 'Quiero un portafolio profesional para mostrar mis trabajos')">Ver más</button>
+                            <button class="btn btn-verde" onclick="responderSolicitud(this, 'aceptada')">Aceptar ✅</button>
+                            <button class="btn btn-rojo" onclick="responderSolicitud(this, 'rechazada')">Rechazar ❌</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Proyectos en progreso -->
+            <div class="seccion">
+                <h2>Mis Proyectos Activos</h2>
+                <div id="lista-proyectos-dev">
+                    <!-- Datos de prueba -->
+                    <div class="proyecto-card">
+                        <div class="proyecto-header">
+                            <h3>Tienda en línea - Carlos López</h3>
+                            <span class="badge badge-progreso">En progreso</span>
+                        </div>
+                        <p class="proyecto-info">Cliente: Carlos López | Inicio: 01/04/2026</p>
+                        <p class="proyecto-info">Subir avances del proyecto:</p>
+                        <div class="subir-archivo">
+                            <input type="file" id="archivo-1">
+                            <button class="btn btn-primario" onclick="subirArchivo('archivo-1')">📤 Subir avance</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== PESTAÑA CLIENTE ===== -->
+        <div class="contenido-pestana" id="pestana-cliente">
+
+            <!-- Mis solicitudes enviadas -->
+            <div class="seccion">
+                <h2>Mis Solicitudes Enviadas</h2>
+                <div id="lista-solicitudes-cliente">
+                    <!-- Datos de prueba -->
+                    <div class="solicitud-card">
+                        <div class="solicitud-info">
+                            <h3>Solicitud a Tristan</h3>
+                            <p>Necesito una página web para mi restaurante</p>
+                        </div>
+                        <span class="badge badge-pendiente">Pendiente 🟡</span>
+                    </div>
+                    <div class="solicitud-card">
+                        <div class="solicitud-info">
+                            <h3>Solicitud a Ibeth</h3>
+                            <p>Quiero un sistema de reservas</p>
+                        </div>
+                        <span class="badge badge-aceptada">Aceptada ✅</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Proyectos y avances -->
+            <div class="seccion">
+                <h2>Mis Proyectos y Avances</h2>
+                <div id="lista-proyectos-cliente">
+                    <!-- Datos de prueba -->
+                    <div class="proyecto-card">
+                        <div class="proyecto-header">
+                            <h3>Sistema de reservas - Ibeth</h3>
+                            <span class="badge badge-progreso">En progreso</span>
+                        </div>
+                        <p class="proyecto-info">Desarrollador: Ibeth | Inicio: 15/03/2026</p>
+                        <p class="proyecto-info" style="margin-bottom:10px">Archivos de avance:</p>
+                        <div class="archivo-item">
+                            <span>📄 avance1.zip — 20/03/2026</span>
+                            <button class="btn btn-azul" onclick="descargarArchivo('avance1.zip')">⬇ Descargar</button>
+                        </div>
+                        <div class="archivo-item">
+                            <span>📄 avance2.zip — 25/03/2026</span>
+                            <button class="btn btn-azul" onclick="descargarArchivo('avance2.zip')">⬇ Descargar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Calificar desarrollador -->
+            <div class="seccion">
+                <h2>Calificar Desarrollador</h2>
+                <div id="lista-calificaciones">
+                    <!-- Datos de prueba -->
+                    <div class="calificacion-card">
+                        <div class="calificacion-header">
+                            <h3>Página de restaurante - Tristan</h3>
+                            <span class="badge badge-terminado">Terminado ✅</span>
+                        </div>
+                        <div class="calificacion-form">
+                            <p style="margin-bottom:10px; font-size:0.9rem; color:#555">¿Cómo fue el trabajo?</p>
+                            <div class="estrellas" id="estrellas-1">
+                                <span class="estrella" onclick="calificar('estrellas-1', 1)">★</span>
+                                <span class="estrella" onclick="calificar('estrellas-1', 2)">★</span>
+                                <span class="estrella" onclick="calificar('estrellas-1', 3)">★</span>
+                                <span class="estrella" onclick="calificar('estrellas-1', 4)">★</span>
+                                <span class="estrella" onclick="calificar('estrellas-1', 5)">★</span>
+                            </div>
+                            <textarea placeholder="Escribe un comentario sobre el trabajo..." style="margin-top:15px"></textarea>
+                            <button class="btn btn-primario" onclick="enviarCalificacion(this)">Enviar calificación</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal detalles solicitud -->
+    <div class="modal-fondo" id="modal-detalles">
+        <div class="modal-detalles">
+            <h2>Detalles de la Solicitud</h2>
+            <div class="detalle-item">
+                <label>Cliente:</label>
+                <p id="detalle-cliente"></p>
+            </div>
+            <div class="detalle-item">
+                <label>Descripción:</label>
+                <p id="detalle-descripcion"></p>
+            </div>
+            <div class="modal-botones" style="margin-top:20px">
+                <button class="btn btn-gris" onclick="cerrarModalDetalles()">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/dashboard.js"></script>
+    <script src="js/solicitudes.js"></script>
+    <script src="js/calificacion.js"></script>
+    <script src="js/anuncios.js"></script>
+</body>
+</html>
