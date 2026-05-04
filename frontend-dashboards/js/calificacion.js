@@ -6,7 +6,6 @@ function calificar(contenedorId, numero){
     estrellas.forEach((estrella, index) => {
         estrella.classList.toggle('activa', index < numero)
     })
-    // Guarda el número seleccionado en el contenedor
     document.getElementById(contenedorId).dataset.seleccion = numero
 }
 
@@ -26,7 +25,7 @@ function enviarCalificacion(boton, proyectoId, desarrolladorId){
         return
     }
 
-    fetch('../../backend/calificaciones/calificar.php', {
+    fetch('../../backend-servicios/calificaciones/calificar.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

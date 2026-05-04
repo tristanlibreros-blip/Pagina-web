@@ -3,25 +3,21 @@
 // Al cargar la página verifica la sesión
 document.addEventListener('DOMContentLoaded', function(){
     verificarSesion()
-    cargarSolicitudesDesarrollador()
-    cargarSolicitudesCliente()
-    cargarProyectosCliente()
 })
 
 // Verifica si hay sesión activa
 function verificarSesion(){
-    fetch('../../backend/auth/sesion.php')
+    fetch('../../backend-auth/auth/sesion.php')
     .then(res => res.json())
     .then(data => {
         if(!data.logueado){
-            // Si no está logueado redirige al login
             window.location = '../frontend-diseño/login.html'
             return
         }
         // Muestra el nombre en la navbar
         document.getElementById('nombre-usuario').textContent = '👤 ' + data.nombre
 
-        // Guarda el id en una variable global para usarlo en los fetch
+        // Guarda el id en variable global
         window.usuarioId = data.id
         window.usuarioNombre = data.nombre
 
@@ -45,7 +41,7 @@ function cambiarPestana(pestana, boton){
 
 // Cerrar sesión
 function cerrarSesion(){
-    fetch('../../backend/auth/cerrar-sesion.php')
+    fetch('../../backend-auth/auth/cerrar-sesion.php')
     .then(res => res.json())
     .then(data => {
         if(data.success){
@@ -70,7 +66,7 @@ function cerrarModalDetalles(){
 function cargarSolicitudesDesarrollador(){
     if(!window.usuarioId) return
 
-    fetch(`../../backend/solicitudes/ver-solicitudes.php?desarrollador_id=${window.usuarioId}`)
+    fetch(`../../backend-servicios/solicitudes/ver-solicitudes.php?desarrollador_id=${window.usuarioId}`)
     .then(res => res.json())
     .then(data => {
         if(!data.success) return
@@ -109,7 +105,7 @@ function cargarSolicitudesDesarrollador(){
 function cargarSolicitudesCliente(){
     if(!window.usuarioId) return
 
-    fetch(`../../backend/solicitudes/ver-solicitudes.php?cliente_id=${window.usuarioId}`)
+    fetch(`../../backend-servicios/solicitudes/ver-solicitudes.php?cliente_id=${window.usuarioId}`)
     .then(res => res.json())
     .then(data => {
         if(!data.success) return
@@ -143,12 +139,13 @@ function cargarSolicitudesCliente(){
 function cargarProyectosCliente(){
     if(!window.usuarioId) return
 
-    fetch(`../../backend/archivos/ver-archivos.php?cliente_id=${window.usuarioId}`)
+    fetch(`../../backend-servicios/archivos/ver-archivos.php?cliente_id=${window.usuarioId}`)
     .then(res => res.json())
     .then(data => {
         if(!data.success) return
 
         const lista = document.getElementById('lista-proyectos-cliente')
+
         if(data.proyectos.length === 0){
             lista.innerHTML = '<p class="empty-state">No tienes proyectos activos aún 😊</p>'
             return
@@ -159,7 +156,7 @@ function cargarProyectosCliente(){
             const archivos = proj.archivos.map(a => `
                 <div class="archivo-item">
                     <span>📄 ${a.nombre} — ${a.fecha}</span>
-                    <button class="btn btn-azul" onclick="window.location='../../backend/archivos/descargar.php?archivo_id=${a.id}'">⬇ Descargar</button>
+                    <button class="btn btn-azul" onclick="window.location='../../backend-servicios/archivos/descargar.php?archivo_id=${a.id}'">⬇ Descargar</button>
                 </div>
             `).join('')
 
@@ -170,7 +167,7 @@ function cargarProyectosCliente(){
                         <span class="badge badge-${proj.estado === 'en progreso' ? 'progreso' : proj.estado}">${proj.estado}</span>
                     </div>
                     <p class="proyecto-info">Desarrollador: ${proj.desarrollador_nombre} | Inicio: ${proj.fecha_inicio}</p>
-                    ${archivos.length > 0 ? `<p class="proyecto-info">Archivos de avance:</p>${archivos}` : '<p class="proyecto-info">Sin archivos aún</p>'}
+                    ${proj.archivos.length > 0 ? `<p class="proyecto-info">Archivos de avance:</p>${archivos}` : '<p class="proyecto-info">Sin archivos aún</p>'}
                 </div>
             `
         })

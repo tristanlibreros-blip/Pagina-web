@@ -5,7 +5,7 @@ function responderSolicitud(boton, respuesta, solicitudId){
     const card = boton.closest('.solicitud-card')
     const nombre = card.querySelector('h3').textContent
 
-    fetch('../../backend/solicitudes/responder-solicitud.php', {
+    fetch('../../backend-servicios/solicitudes/responder-solicitud.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -46,7 +46,7 @@ function subirArchivo(inputId, proyectoId){
     formData.append('archivo', archivo)
     formData.append('proyecto_id', proyectoId)
 
-    fetch('../../backend/archivos/subir.php', {
+    fetch('../../backend-servicios/archivos/subir.php', {
         method: 'POST',
         body: formData
     })
@@ -64,5 +64,5 @@ function subirArchivo(inputId, proyectoId){
 
 // Descargar archivo
 function descargarArchivo(archivoId){
-    window.location = `../../backend/archivos/descargar.php?archivo_id=${archivoId}`
+    window.location = `../../backend-servicios/archivos/descargar.php?archivo_id=${archivoId}`
 }
