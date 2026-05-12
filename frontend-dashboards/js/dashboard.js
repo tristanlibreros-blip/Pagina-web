@@ -1,52 +1,41 @@
 // ===== DASHBOARD.JS =====
 
-// Al cargar la página verifica la sesión
 document.addEventListener('DOMContentLoaded', function(){
-    verificarSesion()
+    verificarSesionDashboard()
 })
 
-// Verifica si hay sesión activa
-function verificarSesion(){
-    fetch('../../backend-auth/auth/sesion.php')
+function verificarSesionDashboard(){
+    fetch('../../compañero3-backend-auth/auth/sesion.php')
     .then(res => res.json())
     .then(data => {
         if(!data.logueado){
-            window.location = '../frontend-diseño/login.html'
+            window.location = '../compañero1-frontend-diseno/login.html'
             return
         }
-        // Muestra el nombre en la navbar
-        document.getElementById('nombre-usuario').textContent = '👤 ' + data.nombre
 
-        // Guarda el id en variable global
-        window.usuarioId = data.id
+        window.usuarioId     = data.id
         window.usuarioNombre = data.nombre
+        window.usuarioTipo   = data.tipo
 
-        // Carga los datos con el id real
-        cargarSolicitudesDesarrollador()
-        cargarSolicitudesCliente()
-        cargarProyectosCliente()
+        // Muestra nombre en navbar
+        const navNombre = document.getElementById('nav-nombre')
+        if(navNombre) navNombre.textContent = '👤 ' + data.nombre
+
+        document.getElementById('nombre-bienvenida').textContent = data.nombre
+
+        // Muestra la vista según el tipo
+        if(data.tipo === 'desarrollador'){
+            document.getElementById('vista-desarrollador').style.display = 'block'
+            cargarAnunciosDesarrollador()
+            cargarSolicitudesDesarrollador()
+        } else {
+            document.getElementById('vista-cliente').style.display = 'block'
+            cargarSolicitudesCliente()
+            cargarProyectosCliente()
+        }
     })
     .catch(() => {
-        window.location = '../frontend-diseño/login.html'
-    })
-}
-
-// Cambiar entre pestañas
-function cambiarPestana(pestana, boton){
-    document.querySelectorAll('.contenido-pestana').forEach(p => p.classList.remove('activo'))
-    document.querySelectorAll('.pestana').forEach(b => b.classList.remove('activa'))
-    document.getElementById('pestana-' + pestana).classList.add('activo')
-    boton.classList.add('activa')
-}
-
-// Cerrar sesión
-function cerrarSesion(){
-    fetch('../../backend-auth/auth/cerrar-sesion.php')
-    .then(res => res.json())
-    .then(data => {
-        if(data.success){
-            window.location = '../frontend-diseño/index.html'
-        }
+        window.location = '../compañero1-frontend-diseno/login.html'
     })
 }
 
@@ -57,7 +46,6 @@ function verDetalles(cliente, descripcion){
     document.getElementById('modal-detalles').classList.add('activo')
 }
 
-// Cerrar modal detalles
 function cerrarModalDetalles(){
     document.getElementById('modal-detalles').classList.remove('activo')
 }
@@ -66,14 +54,11 @@ function cerrarModalDetalles(){
 function cargarSolicitudesDesarrollador(){
     if(!window.usuarioId) return
 
-    fetch(`../../backend-servicios/solicitudes/ver-solicitudes.php?desarrollador_id=${window.usuarioId}`)
+    fetch(`../../compañero4-backend-servicios/solicitudes/ver-solicitudes.php?desarrollador_id=${window.usuarioId}`)
     .then(res => res.json())
     .then(data => {
-        if(!data.success) return
-
         const lista = document.getElementById('lista-solicitudes-dev')
-
-        if(data.solicitudes.length === 0){
+        if(!data.success || data.solicitudes.length === 0){
             lista.innerHTML = '<p class="empty-state">No tienes solicitudes pendientes 😊</p>'
             return
         }
@@ -98,21 +83,18 @@ function cargarSolicitudesDesarrollador(){
             `
         })
     })
-    .catch(() => console.log('Error al cargar solicitudes del desarrollador'))
+    .catch(() => console.log('Error al cargar solicitudes'))
 }
 
 // Cargar solicitudes enviadas por el cliente
 function cargarSolicitudesCliente(){
     if(!window.usuarioId) return
 
-    fetch(`../../backend-servicios/solicitudes/ver-solicitudes.php?cliente_id=${window.usuarioId}`)
+    fetch(`../../compañero4-backend-servicios/solicitudes/ver-solicitudes.php?cliente_id=${window.usuarioId}`)
     .then(res => res.json())
     .then(data => {
-        if(!data.success) return
-
         const lista = document.getElementById('lista-solicitudes-cliente')
-
-        if(data.solicitudes.length === 0){
+        if(!data.success || data.solicitudes.length === 0){
             lista.innerHTML = '<p class="empty-state">No has enviado solicitudes aún 😊</p>'
             return
         }
@@ -132,21 +114,18 @@ function cargarSolicitudesCliente(){
             `
         })
     })
-    .catch(() => console.log('Error al cargar solicitudes del cliente'))
+    .catch(() => console.log('Error al cargar solicitudes cliente'))
 }
 
 // Cargar proyectos del cliente con archivos
 function cargarProyectosCliente(){
     if(!window.usuarioId) return
 
-    fetch(`../../backend-servicios/archivos/ver-archivos.php?cliente_id=${window.usuarioId}`)
+    fetch(`../../compañero4-backend-servicios/archivos/ver-archivos.php?cliente_id=${window.usuarioId}`)
     .then(res => res.json())
     .then(data => {
-        if(!data.success) return
-
         const lista = document.getElementById('lista-proyectos-cliente')
-
-        if(data.proyectos.length === 0){
+        if(!data.success || data.proyectos.length === 0){
             lista.innerHTML = '<p class="empty-state">No tienes proyectos activos aún 😊</p>'
             return
         }
@@ -156,7 +135,7 @@ function cargarProyectosCliente(){
             const archivos = proj.archivos.map(a => `
                 <div class="archivo-item">
                     <span>📄 ${a.nombre} — ${a.fecha}</span>
-                    <button class="btn btn-azul" onclick="window.location='../../backend-servicios/archivos/descargar.php?archivo_id=${a.id}'">⬇ Descargar</button>
+                    <button class="btn btn-azul" onclick="window.location='../../compañero4-backend-servicios/archivos/descargar.php?archivo_id=${a.id}'">⬇ Descargar</button>
                 </div>
             `).join('')
 

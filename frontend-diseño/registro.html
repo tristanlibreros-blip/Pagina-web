@@ -1,66 +1,119 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ChambaTec</title>
+    <title>ChambaTec - Registro</title>
     <link rel="stylesheet" href="css/estilos.css">
-   
 </head>
 <body>
     <header class="header"> 
         <div class="logo">
-            <img src="gato.jpg" alt="gato chambeador">
+            <a href="index.html"><img src="gato.jpg" alt="ChambaTec"></a>
         </div>     
         <nav>
-            <ul class="nav-links">
+            <ul class="nav-links" id="nav-links">
                 <li><a href="index.html">Inicio</a></li>
-                <li><a href="login.html">Login</a></li>
-                <li><a href="registro.html">Registro</a></li>
-                <li><a href="/frontend-dashboards/dashboard.html">Mis Proyectos</a></li>
+                <li id="nav-login"><a href="login.html">Login</a></li>
+                <li id="nav-registro"><a href="registro.html">Registro</a></li>
+                <li id="nav-perfil" style="display:none"><a href="#" id="nav-nombre">👤 Usuario</a></li>
+                <li id="nav-dashboard" style="display:none"><a href="../frontend-dashboards/dashboard.html">Mi cuenta</a></li>
+                <li id="nav-cerrar" style="display:none"><a href="#" onclick="cerrarSesion()">Cerrar sesión</a></li>
             </ul>
         </nav>
     </header>
+
     <div class="cuerpo">
-    <div class="contenedor">
-        <div class="titulo">Registro</div>
-        <form id="validacion" novalidate>
-            <div class="registro">
-                <span>Nombre</span>
-                <input type="text" name="nombre" id="nombre" placeholder="Ingrese nombre" required>
-                <small>Por favor, ingrese su nombre</small>
+        <div class="contenedor" style="max-width:800px">
+            <div class="titulo">Registro</div>
+
+            <!-- Selector de tipo -->
+            <div style="display:flex; gap:15px; margin:20px 12px 10px; justify-content:center">
+                <label class="tipo-card" id="card-cliente">
+                    <input type="radio" name="tipo" value="cliente" checked>
+                    <div class="tipo-contenido">
+                        <span style="font-size:2rem">👤</span>
+                        <strong>Cliente</strong>
+                        <p>Quiero contratar desarrolladores</p>
+                    </div>
+                </label>
+                <label class="tipo-card" id="card-desarrollador">
+                    <input type="radio" name="tipo" value="desarrollador">
+                    <div class="tipo-contenido">
+                        <span style="font-size:2rem">👨‍💻</span>
+                        <strong>Desarrollador</strong>
+                        <p>Quiero ofrecer mis servicios</p>
+                    </div>
+                </label>
             </div>
-            <div class="registro">
-                <span>Usuario</span>
-                <input type="text" name="usuario" id="usuario" placeholder="Ingrese usuario" required>
-                <small>Por favor, ingrese su usuario</small>
-            </div>
-            <div class="registro">
-                <span>Email</span>
-                <input type="email" name="email" id="email" placeholder="Ingrese email" required>
-                <small>Por favor, ingrese su email</small>
-            </div>
-            <div class="registro">
-                <span>Telefono</span>
-                <input type="number" name="telefono" id="telefono" placeholder="Ingrese telefono" required>
-                <small>Por favor, ingrese su telefono</small>
-            </div>
-            <div class="registro">
-                <span>Contraseña</span>
-                <input type="password" name="contrasena" id="contrasena" placeholder="Ingrese contraseña" required>
-                <small>Por favor, ingrese su contraseña</small>
-            </div>
-            <div class="registro">
-                <span>Confirmar Contraseña</span>
-                <input type="password" name="confirmar_contrasena" id="confirmar_contrasena" placeholder="Ingrese contraseña" required>
-                <small>Por favor, confirme su contraseña</small>
-            </div>
-            <div class="boton">
-                <input type="submit" value="Registrarse">
-            </div>
-        </form>
+
+            <form id="validacion" novalidate>
+                <div class="registro">
+                    <span>Nombre</span>
+                    <input type="text" name="nombre" id="nombre" placeholder="Ingrese nombre" required>
+                    <small>Por favor, ingrese su nombre</small>
+                </div>
+                <div class="registro">
+                    <span>Usuario</span>
+                    <input type="text" name="usuario" id="usuario" placeholder="Ingrese usuario" required>
+                    <small>Por favor, ingrese su usuario</small>
+                </div>
+                <div class="registro">
+                    <span>Email</span>
+                    <input type="email" name="email" id="email" placeholder="Ingrese email" required>
+                    <small>Por favor, ingrese su email</small>
+                </div>
+                <div class="registro">
+                    <span>Teléfono</span>
+                    <input type="number" name="telefono" id="telefono" placeholder="Ingrese teléfono" required>
+                    <small>Por favor, ingrese su teléfono</small>
+                </div>
+                <div class="registro">
+                    <span>Contraseña</span>
+                    <input type="password" name="contrasena" id="contrasena" placeholder="Ingrese contraseña" required>
+                    <small>Por favor, ingrese su contraseña</small>
+                </div>
+                <div class="registro">
+                    <span>Confirmar Contraseña</span>
+                    <input type="password" name="confirmar_contrasena" id="confirmar_contrasena" placeholder="Confirme contraseña" required>
+                    <small>Por favor, confirme su contraseña</small>
+                </div>
+                <div class="boton">
+                    <input type="submit" value="Registrarse">
+                </div>
+                <div style="text-align:center; margin-bottom:15px; color:#555">
+                    ¿Ya tienes cuenta? <a href="login.html" style="color:blue">Inicia sesión</a>
+                </div>
+            </form>
+        </div>
     </div>
+
+    <style>
+        .tipo-card {
+            flex: 1;
+            cursor: pointer;
+        }
+        .tipo-card input[type="radio"] { display: none; }
+        .tipo-contenido {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            padding: 20px;
+            border: 2px solid var(--color-borde);
+            border-radius: 10px;
+            text-align: center;
+            transition: var(--transicion);
+            background: white;
+        }
+        .tipo-contenido p { font-size: 0.85rem; color: var(--color-texto-suave); }
+        .tipo-card input:checked + .tipo-contenido {
+            border-color: blue;
+            background: #eef2ff;
+        }
+    </style>
+
     <script src="js/registro.js"></script>
-    </div>
+    <script src="js/navbar.js"></script>
 </body>
 </html>
