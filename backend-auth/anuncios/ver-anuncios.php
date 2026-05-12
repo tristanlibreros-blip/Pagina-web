@@ -12,7 +12,7 @@ include '../conexion.php';
 
 if(isset($_GET['desarrollador_id'])){
     // Anuncios del desarrollador para su dashboard
-    $id = mysqli_real_escape_string($conexion, $_GET['desarrollador_id']);
+    $id = mysqli_real_escape_string($conn, $_GET['desarrollador_id']);
     $query = "SELECT a.*, u.nombre AS dev_nombre, u.usuario AS dev_usuario
               FROM anuncios a
               JOIN usuarios u ON a.desarrollador_id = u.id
@@ -21,7 +21,7 @@ if(isset($_GET['desarrollador_id'])){
 
 } else if(isset($_GET['buscar'])){
     // Búsqueda por nombre o especialidad
-    $buscar = mysqli_real_escape_string($conexion, $_GET['buscar']);
+    $buscar = mysqli_real_escape_string($conn, $_GET['buscar']);
     $query = "SELECT a.*, u.nombre AS dev_nombre, u.usuario AS dev_usuario,
                      COALESCE(AVG(c.estrellas), 0) AS promedio_estrellas,
                      COUNT(c.id) AS total_calificaciones
@@ -48,7 +48,7 @@ if(isset($_GET['desarrollador_id'])){
               LIMIT $limit";
 }
 
-$resultado = mysqli_query($conexion, $query);
+$resultado = mysqli_query($conn, $query);
 $anuncios = [];
 
 while($fila = mysqli_fetch_assoc($resultado)){

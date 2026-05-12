@@ -9,7 +9,7 @@ $datos = json_decode(file_get_contents('php://input'), true);
 if ($datos) {
     $usuario = $datos['usuario'];
     // OJO: En tu login.js le pusiste 'contraseña' (con ñ), así que aquí la recibimos igual
-    $contrasena_ingresada = $datos['contraseña']; 
+    $contrasena_ingresada = $datos['contrasena']; 
 
     // Preparamos la consulta para buscar al usuario por su nombre de usuario
     $stmt = $conn->prepare("SELECT id, nombre, contrasena, tipo FROM usuarios WHERE usuario = ?");
@@ -27,7 +27,7 @@ if ($datos) {
             // ¡Éxito! Guardamos sus datos en la sesión del servidor
             $_SESSION['usuario_id'] = $user_db['id'];
             $_SESSION['usuario_nombre'] = $user_db['nombre'];
-            $_SESSION['usuario_rol'] = $user_db['tipo'];
+            $_SESSION['usuario_tipo'] = $user_db['tipo'];
 
             // Le respondemos al frontend que todo salió bien y le pasamos el rol
             echo json_encode([

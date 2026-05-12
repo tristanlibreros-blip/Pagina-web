@@ -22,7 +22,7 @@ desarrolladores.forEach(dev => {
          <p class="usuario-profesion">${dev.profesion}</p>
          <p class="usuario-estrellas">⭐ ${dev.estrellas}</p>
          <button class="btn-mensaje" onclick="abrirModal('${dev.nombre}')">
-            Enviar Mensaje
+            Enviar solicitud
          </button>
       </div>
    `
@@ -71,4 +71,42 @@ function enviarSolicitud(){
    }
    alert(`Solicitud enviada a ${desarrolladorSeleccionado} ✅`)
    cerrarModal()
+}
+document.addEventListener('DOMContentLoaded', () => {
+   cargarAnunciosIndex()
+})
+
+function cargarAnunciosIndex(){
+   fetch('../backend-auth/anuncios/ver-anuncios.php?top=20')
+   .then(res => res.json())
+   .then(data => {
+      const lista = document.getElementById('lista-anuncios-index')
+
+      if(!data.success || data.anuncios.length === 0){
+         lista.innerHTML = '<p>No hay anuncios disponibles</p>'
+         return
+      }
+
+      lista.innerHTML = ''
+
+      data.anuncios.forEach(anuncio => {
+         lista.innerHTML += `
+            <div class="anuncio-index-card">
+               <h2>${anuncio.titulo}</h2>
+               <p>${anuncio.descripcion}</p>
+               <p><strong>${anuncio.especialidad}</strong></p>
+               <p>Desde $${anuncio.precio}</p>
+               <p>${Array.isArray(anuncio.lenguajes) ? anuncio.lenguajes.join(', ') : ''}</p>
+               <p>👨‍💻 ${anuncio.dev_nombre}</p>
+
+               <button class="btn btn-azul" onclick="abrirModal('${anuncio.dev_nombre}')">
+                  Enviar solicitud
+               </button>
+            </div>
+         `
+      })
+   })
+   .catch(error => {
+      console.error(error)
+   })
 }

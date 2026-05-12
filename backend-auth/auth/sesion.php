@@ -9,14 +9,15 @@ header('Content-Type: application/json');
 if (isset($_SESSION['usuario_id'])) {
     // Si existe, le mandamos los datos del usuario al frontend
     echo json_encode([
-        "activa" => true,
+        "logueado" => true,
+        'id' => $_SESSION['usuario_id'],
         "nombre" => $_SESSION['usuario_nombre'],
-        "rol" => $_SESSION['usuario_rol']
+        "tipo" => $_SESSION['usuario_tipo']
     ]);
 } else {
     // Si no existe, significa que es un visitante sin cuenta
     echo json_encode([
-        "activa" => false
+        "logueado" => false
     ]);
 }
 ?>

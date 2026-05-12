@@ -131,7 +131,6 @@ small { display: none; }
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
   background: var(--gradiente);
   padding: 40px 60px;
 }
@@ -424,4 +423,32 @@ form .boton input:hover { background: var(--gradiente); }
   .contenedor form::-webkit-scrollbar { width: 0; }
   form .boton { margin: 20px 0; }
   .solicitud-card { flex-direction: column; align-items: flex-start; }
+}
+#lista-anuncios-index {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  padding: 40px;
+  background: transparent;
+}
+
+.anuncio-index-card {
+  background: white;
+  border: 1px solid var(--color-borde);
+  border-radius: 12px;
+  padding: 22px;
+  box-shadow: var(--sombra);
+}
+
+.anuncio-index-card h2 {
+  margin-bottom: 10px;
+  color: var(--color-texto);
+}
+
+.anuncio-index-card p {
+  margin-bottom: 8px;
+  color: var(--color-texto-suave);
+}
+body{
+  background: var(--gradiente);
 }

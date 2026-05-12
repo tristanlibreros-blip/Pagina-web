@@ -25,11 +25,12 @@ addForm.addEventListener("submit", (e) => {
       usuario: document.getElementById('usuario').value,
       email: document.getElementById('email').value,
       telefono: document.getElementById('telefono').value,
-      contrasena: contrasena
+      contrasena: contrasena,
+      tipo: document.querySelector('input[name="tipo"]:checked').value
    }
 
    // Manda los datos al backend
-   fetch('../../backend-auth/auth/registro.php', {
+   fetch('../backend-auth/auth/registro.php', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(datos)

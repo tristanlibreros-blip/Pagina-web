@@ -5,7 +5,9 @@ document.addEventListener('DOMContentLoaded', function(){
 })
 
 function verificarSesionDashboard(){
-    fetch('../../backend-auth/auth/sesion.php')
+    fetch('../backend-auth/auth/sesion.php', {
+        credentials: 'include' // Asegura que se envíen las cookies de sesión
+    })
     .then(res => res.json())
     .then(data => {
         if(!data.logueado){
@@ -54,7 +56,7 @@ function cerrarModalDetalles(){
 function cargarSolicitudesDesarrollador(){
     if(!window.usuarioId) return
 
-    fetch(`../../backend-servicios/solicitudes/ver-solicitudes.php?desarrollador_id=${window.usuarioId}`)
+    fetch(`../backend-servicios/solicitudes/ver-solicitudes.php?desarrollador_id=${window.usuarioId}`)
     .then(res => res.json())
     .then(data => {
         const lista = document.getElementById('lista-solicitudes-dev')
@@ -90,7 +92,7 @@ function cargarSolicitudesDesarrollador(){
 function cargarSolicitudesCliente(){
     if(!window.usuarioId) return
 
-    fetch(`../../backend-servicios/solicitudes/ver-solicitudes.php?cliente_id=${window.usuarioId}`)
+    fetch(`../backend-servicios/solicitudes/ver-solicitudes.php?cliente_id=${window.usuarioId}`)
     .then(res => res.json())
     .then(data => {
         const lista = document.getElementById('lista-solicitudes-cliente')
@@ -121,7 +123,7 @@ function cargarSolicitudesCliente(){
 function cargarProyectosCliente(){
     if(!window.usuarioId) return
 
-    fetch(`../../backend-servicios/archivos/ver-archivos.php?cliente_id=${window.usuarioId}`)
+    fetch(`../backend-servicios/archivos/ver-archivos.php?cliente_id=${window.usuarioId}`)
     .then(res => res.json())
     .then(data => {
         const lista = document.getElementById('lista-proyectos-cliente')

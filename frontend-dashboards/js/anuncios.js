@@ -69,7 +69,7 @@ function guardarAnuncio(){
     formData.append('precio', precio)
     if(bannerFile) formData.append('banner', bannerFile)
 
-    fetch('../../backend-auth/anuncios/crear-anuncio.php', {
+    fetch('../backend-auth/anuncios/crear-anuncio.php', {
         method: 'POST',
         body: formData
     })
@@ -90,7 +90,7 @@ function guardarAnuncio(){
 function cargarAnunciosDesarrollador(){
     if(!window.usuarioId) return
 
-    fetch(`../../backend-auth/anuncios/ver-anuncios.php?desarrollador_id=${window.usuarioId}`)
+    fetch(`../backend-auth/anuncios/ver-anuncios.php?desarrollador_id=${window.usuarioId}`)
     .then(res => res.json())
     .then(data => {
         const lista = document.getElementById('lista-anuncios-dev')
@@ -105,17 +105,22 @@ function cargarAnunciosDesarrollador(){
         data.anuncios.forEach(anuncio => {
             lista.innerHTML += `
                 <div class="solicitud-card">
-                    <div class="solicitud-info">
-                        <h3>${anuncio.titulo}</h3>
-                        <p>${anuncio.especialidad} | Desde $${anuncio.precio}</p>
-                        <p style="margin-top:4px; font-size:0.85rem; color:#888">
-                            ${anuncio.lenguajes ? anuncio.lenguajes.join(', ') : ''}
-                        </p>
-                    </div>
-                    <div class="solicitud-botones">
-                        <button class="btn btn-rojo" onclick="eliminarAnuncio(${anuncio.id})">🗑 Eliminar</button>
-                    </div>
+                <img 
+                    src="../backend-auth/anuncios/banner.php?anuncio_id=${anuncio.id}" 
+                    style="display:block; width:100%; height:120px; object-fit:cover; border:3px solid red; border-radius:10px; margin-bottom:10px"
+                >
+                <div class="solicitud-info">
+                    <h3>${anuncio.titulo}</h3>
+                    <p>${anuncio.especialidad} | Desde $${anuncio.precio}</p>
+                    <p style="margin-top:4px; font-size:0.85rem; color:#888">
+                        ${Array.isArray(anuncio.lenguajes) ? anuncio.lenguajes.join(', ') : ''}
+                    </p>
                 </div>
+                <div class="solicitud-botones">
+                    <button class="btn btn-azul" onclick="editarAnuncio(${anuncio.id})">✏️ Editar</button>
+                    <button class="btn btn-rojo" onclick="eliminarAnuncio(${anuncio.id})">🗑 Eliminar</button>
+                </div>
+            </div>
             `
         })
     })
@@ -126,7 +131,7 @@ function cargarAnunciosDesarrollador(){
 function eliminarAnuncio(id){
     if(!confirm('¿Seguro que quieres eliminar este anuncio?')) return
 
-    fetch('../../backend-auth/anuncios/eliminar-anuncio.php', {
+    fetch('../backend-auth/anuncios/eliminar-anuncio.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ anuncio_id: id, desarrollador_id: window.usuarioId })

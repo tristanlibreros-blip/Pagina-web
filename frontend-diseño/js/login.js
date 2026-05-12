@@ -6,19 +6,22 @@ document.querySelector('form')
    // Agarra los valores con tus IDs
    const datos = {
       usuario: document.getElementById('usuario').value,
-      contraseña: document.getElementById('contraseña').value
+      contrasena: document.getElementById('contrasena').value
    }
 
    // Valida que no estén vacíos
-   if(!datos.usuario || !datos.contraseña){
+   if(!datos.usuario || !datos.contrasena){
       alert('Por favor llena todos los campos')
       return
    }
 
    // Manda los datos al backend
-   fetch('../../backend-auth/auth/login.php', {
+   fetch('../backend-auth/auth/login.php', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      headers: {
+         'Content-Type': 'application/json'
+      },
       body: JSON.stringify(datos)
    })
    .then(res => res.json())
@@ -26,9 +29,9 @@ document.querySelector('form')
       if(data.success){
          // Redirige según tipo de usuario
          if(data.tipo == 'cliente'){
-            window.location = '../dashboard-cliente.html'
+            window.location = '../frontend-dashboards/dashboard.html'
          } else {
-            window.location = '../dashboard-desarrollador.html'
+            window.location = '../frontend-dashboards/dashboard.html'
          }
       } else {
          alert(data.mensaje)
