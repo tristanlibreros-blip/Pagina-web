@@ -52,26 +52,6 @@ const swiper = new Swiper('.slider-wrapper', {
 // Modal
 let desarrolladorSeleccionado = null
 
-function abrirModal(nombre){
-   desarrolladorSeleccionado = nombre
-   document.getElementById('nombre-dev').textContent = nombre
-   document.getElementById('modal-fondo').classList.add('activo')
-}
-
-function cerrarModal(){
-   document.getElementById('modal-fondo').classList.remove('activo')
-   document.getElementById('descripcion').value = ''
-}
-
-function enviarSolicitud(){
-   const descripcion = document.getElementById('descripcion').value
-   if(!descripcion){
-      alert('Por favor describe lo que necesitas')
-      return
-   }
-   alert(`Solicitud enviada a ${desarrolladorSeleccionado} ✅`)
-   cerrarModal()
-}
 document.addEventListener('DOMContentLoaded', () => {
    cargarAnunciosIndex()
 })
@@ -99,7 +79,7 @@ function cargarAnunciosIndex(){
                <p>${Array.isArray(anuncio.lenguajes) ? anuncio.lenguajes.join(', ') : ''}</p>
                <p>👨‍💻 ${anuncio.dev_nombre}</p>
 
-               <button class="btn btn-azul" onclick="abrirModal('${anuncio.dev_nombre}')">
+               <button class="btn btn-azul" onclick="abrirModalSolicitud(${anuncio.id}, ${anuncio.desarrollador_id}, '${anuncio.dev_nombre}')">
                   Enviar solicitud
                </button>
             </div>
@@ -109,4 +89,69 @@ function cargarAnunciosIndex(){
    .catch(error => {
       console.error(error)
    })
+}
+let anuncioSeleccionado = null
+let desarrolladorIdSeleccionado = null
+
+function abrirModalSolicitud(anuncioId, desarrolladorId, nombreDev){
+   anuncioSeleccionado = anuncioId
+   desarrolladorIdSeleccionado = desarrolladorId
+
+   document.getElementById('nombre-dev').textContent = nombreDev
+   document.getElementById('descripcion-solicitud').value = ''
+   document.getElementById('modal-solicitud').classList.add('activo')
+}
+
+function cerrarModalSolicitud(){
+   document.getElementById('modal-solicitud').classList.remove('activo')
+}
+
+function enviarSolicitud(){
+   const descripcion = document.getElementById('descripcion-solicitud').value
+
+   if(!descripcion){
+      alert('Por favor describe lo que necesitas')
+      return
+   }
+
+   fetch('../backend-servicios/solicitudes/crear-solicitud.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+         anuncio_id: anuncioSeleccionado,
+         desarrollador_id: desarrolladorIdSeleccionado,
+         descripcion: descripcion
+      })
+   })
+   .then(res => res.json())
+   .then(data => {
+      if(data.success){
+         alert('Solicitud enviada ✅')
+         cerrarModalSolicitud()
+      } else {
+         alert(data.mensaje)
+      }
+   })
+   .catch(error => {
+      console.error(error)
+      alert('Error de conexión')
+   })
+}
+function cerrarSesion(){
+
+    fetch('../backend-auth/auth/cerrar_sesion.php', {
+        credentials: 'include'
+    })
+    .then(res => res.json())
+    .then(data => {
+
+        if(data.success){
+
+            window.location =
+            '../frontend-diseño/login.html'
+        }
+    })
+    .catch(error => {
+        console.error(error)
+    })
 }

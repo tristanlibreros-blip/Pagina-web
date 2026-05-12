@@ -6,7 +6,7 @@
 header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json');
 
-include '../conexion.php';
+include '../../backend-auth/conexion.php';
 
 $datos = json_decode(file_get_contents('php://input'));
 
@@ -15,11 +15,11 @@ if(!isset($datos->proyecto_id) || !isset($datos->cliente_id) || !isset($datos->d
     exit;
 }
 
-$proyecto_id     = mysqli_real_escape_string($conexion, $datos->proyecto_id);
-$cliente_id      = mysqli_real_escape_string($conexion, $datos->cliente_id);
-$desarrollador_id = mysqli_real_escape_string($conexion, $datos->desarrollador_id);
+$proyecto_id     = mysqli_real_escape_string($conn, $datos->proyecto_id);
+$cliente_id      = mysqli_real_escape_string($conn, $datos->cliente_id);
+$desarrollador_id = mysqli_real_escape_string($conn, $datos->desarrollador_id);
 $estrellas       = (int)$datos->estrellas;
-$comentario      = isset($datos->comentario) ? mysqli_real_escape_string($conexion, $datos->comentario) : '';
+$comentario      = isset($datos->comentario) ? mysqli_real_escape_string($conn, $datos->comentario) : '';
 
 // Validar estrellas
 if($estrellas < 1 || $estrellas > 5){
@@ -32,7 +32,7 @@ $check = "SELECT id FROM proyectos
           WHERE id = '$proyecto_id' 
           AND cliente_id = '$cliente_id'
           AND estado = 'terminado'";
-$resultado = mysqli_query($conexion, $check);
+$resultado = mysqli_query($conn, $check);
 
 if(mysqli_num_rows($resultado) === 0){
     echo json_encode(['success' => false, 'mensaje' => 'El proyecto no está terminado o no te pertenece']);
@@ -43,7 +43,7 @@ if(mysqli_num_rows($resultado) === 0){
 $check2 = "SELECT id FROM calificaciones 
            WHERE proyecto_id = '$proyecto_id' 
            AND cliente_id = '$cliente_id'";
-$resultado2 = mysqli_query($conexion, $check2);
+$resultado2 = mysqli_query($conn, $check2);
 
 if(mysqli_num_rows($resultado2) > 0){
     echo json_encode(['success' => false, 'mensaje' => 'Ya calificaste este proyecto']);
@@ -54,7 +54,7 @@ if(mysqli_num_rows($resultado2) > 0){
 $query = "INSERT INTO calificaciones (proyecto_id, cliente_id, desarrollador_id, estrellas, comentario)
           VALUES ('$proyecto_id', '$cliente_id', '$desarrollador_id', '$estrellas', '$comentario')";
 
-if(mysqli_query($conexion, $query)){
+if(mysqli_query($conn, $query)){
     echo json_encode(['success' => true]);
 } else {
     echo json_encode(['success' => false, 'mensaje' => 'Error al guardar la calificación']);

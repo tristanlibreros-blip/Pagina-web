@@ -1,45 +1,53 @@
 <?php
-// crear-solicitud.php
-// Recibe: cliente_id, desarrollador_id, anuncio_id, descripcion
-// Responde: { success: true } o { success: false, mensaje: "..." }
+session_start();
 
-header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json');
 
-include '../conexion.php';
+include '../../backend-auth/conexion.php';
 
-$datos = json_decode(file_get_contents('php://input'));
-
-// Validar datos
-if(!isset($datos->cliente_id) || !isset($datos->desarrollador_id) || !isset($datos->descripcion)){
-    echo json_encode(['success' => false, 'mensaje' => 'Faltan datos']);
+if(!isset($_SESSION['usuario_id'])){
+    echo json_encode([
+        'success' => false,
+        'mensaje' => 'Debes iniciar sesión como cliente'
+    ]);
     exit;
 }
 
-$cliente_id      = mysqli_real_escape_string($conexion, $datos->cliente_id);
-$desarrollador_id = mysqli_real_escape_string($conexion, $datos->desarrollador_id);
-$anuncio_id      = isset($datos->anuncio_id) ? mysqli_real_escape_string($conexion, $datos->anuncio_id) : null;
-$descripcion     = mysqli_real_escape_string($conexion, $datos->descripcion);
+$datos = json_decode(file_get_contents('php://input'), true);
 
-// Verificar que no exista ya una solicitud pendiente del mismo cliente al mismo dev
-$check = "SELECT id FROM solicitudes 
-          WHERE cliente_id = '$cliente_id' 
-          AND desarrollador_id = '$desarrollador_id' 
-          AND estado = 'pendiente'";
-$resultado = mysqli_query($conexion, $check);
-
-if(mysqli_num_rows($resultado) > 0){
-    echo json_encode(['success' => false, 'mensaje' => 'Ya tienes una solicitud pendiente con este desarrollador']);
+if(!$datos || !isset($datos['desarrollador_id']) || !isset($datos['descripcion'])){
+    echo json_encode([
+        'success' => false,
+        'mensaje' => 'Faltan datos'
+    ]);
     exit;
 }
 
-// Insertar solicitud
-$query = "INSERT INTO solicitudes (cliente_id, desarrollador_id, anuncio_id, descripcion, estado) 
-          VALUES ('$cliente_id', '$desarrollador_id', " . ($anuncio_id ? "'$anuncio_id'" : "NULL") . ", '$descripcion', 'pendiente')";
+$cliente_id = $_SESSION['usuario_id'];
+$desarrollador_id = $datos['desarrollador_id'];
+$anuncio_id = $datos['anuncio_id'] ?? null;
+$descripcion = $datos['descripcion'];
 
-if(mysqli_query($conexion, $query)){
+$stmt = $conn->prepare("
+    INSERT INTO solicitudes
+    (cliente_id, desarrollador_id, anuncio_id, descripcion, estado)
+    VALUES (?, ?, ?, ?, 'pendiente')
+");
+
+$stmt->bind_param(
+    "iiis",
+    $cliente_id,
+    $desarrollador_id,
+    $anuncio_id,
+    $descripcion
+);
+
+if($stmt->execute()){
     echo json_encode(['success' => true]);
 } else {
-    echo json_encode(['success' => false, 'mensaje' => 'Error al crear la solicitud']);
+    echo json_encode([
+        'success' => false,
+        'mensaje' => $conn->error
+    ]);
 }
 ?>

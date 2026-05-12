@@ -4,6 +4,8 @@ const lenguajesDisponibles = ['PHP', 'JavaScript', 'Python', 'Java', 'C#', 'Type
     'React', 'Vue', 'Angular', 'Node.js', 'Laravel', 'MySQL', 'MongoDB', 'CSS', 'HTML']
 
 let lenguajesSeleccionados = []
+let anunciosGlobal = []
+let anuncioEditando = null
 
 // Genera los botones de lenguajes en el modal
 function generarBotonesLenguajes(){
@@ -45,6 +47,7 @@ function abrirModalAnuncio(){
 
 function cerrarModalAnuncio(){
     document.getElementById('modal-anuncio').classList.remove('activo')
+    anuncioEditando = null
 }
 
 // Guardar anuncio
@@ -68,8 +71,16 @@ function guardarAnuncio(){
     formData.append('lenguajes', JSON.stringify(lenguajesSeleccionados))
     formData.append('precio', precio)
     if(bannerFile) formData.append('banner', bannerFile)
+    
+    if(anuncioEditando){
+    formData.append('anuncio_id', anuncioEditando)
+    }
 
-    fetch('../backend-auth/anuncios/crear-anuncio.php', {
+    fetch(
+        anuncioEditando
+        ? '../backend-auth/anuncios/editar-anuncio.php'
+        : '../backend-auth/anuncios/crear-anuncio.php',
+    {
         method: 'POST',
         body: formData
     })
@@ -102,6 +113,7 @@ function cargarAnunciosDesarrollador(){
         }
 
         lista.innerHTML = ''
+        anunciosGlobal = data.anuncios
         data.anuncios.forEach(anuncio => {
             lista.innerHTML += `
                 <div class="solicitud-card">
@@ -126,7 +138,34 @@ function cargarAnunciosDesarrollador(){
     })
     .catch(() => console.log('Error al cargar anuncios'))
 }
+function editarAnuncio(id){
 
+    const anuncio = anunciosGlobal.find(a => a.id == id)
+
+    if(!anuncio) return
+
+    anuncioEditando = anuncio.id
+
+    document.getElementById('anuncio-titulo').value =
+    anuncio.titulo
+
+    document.getElementById('anuncio-descripcion').value =
+    anuncio.descripcion
+
+    document.getElementById('anuncio-especialidad').value =
+    anuncio.especialidad
+
+    document.getElementById('anuncio-precio').value =
+    anuncio.precio
+
+    lenguajesSeleccionados =
+    anuncio.lenguajes || []
+
+    generarBotonesLenguajes()
+
+    document.getElementById('modal-anuncio')
+    .classList.add('activo')
+}
 // Eliminar anuncio
 function eliminarAnuncio(id){
     if(!confirm('¿Seguro que quieres eliminar este anuncio?')) return

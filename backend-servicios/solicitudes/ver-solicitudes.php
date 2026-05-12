@@ -7,11 +7,11 @@
 header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json');
 
-include '../conexion.php';
+include '../../backend-auth/conexion.php';
 
 if(isset($_GET['desarrollador_id'])){
     // Solicitudes recibidas por el desarrollador
-    $desarrollador_id = mysqli_real_escape_string($conexion, $_GET['desarrollador_id']);
+    $desarrollador_id = mysqli_real_escape_string($conn, $_GET['desarrollador_id']);
 
     $query = "SELECT s.id, s.descripcion, s.estado, s.fecha,
                      u.nombre AS cliente_nombre, u.usuario AS cliente_usuario
@@ -22,7 +22,7 @@ if(isset($_GET['desarrollador_id'])){
 
 } else if(isset($_GET['cliente_id'])){
     // Solicitudes enviadas por el cliente
-    $cliente_id = mysqli_real_escape_string($conexion, $_GET['cliente_id']);
+    $cliente_id = mysqli_real_escape_string($conn, $_GET['cliente_id']);
 
     $query = "SELECT s.id, s.descripcion, s.estado, s.fecha,
                      u.nombre AS desarrollador_nombre, u.usuario AS desarrollador_usuario
@@ -36,7 +36,7 @@ if(isset($_GET['desarrollador_id'])){
     exit;
 }
 
-$resultado = mysqli_query($conexion, $query);
+$resultado = mysqli_query($conn, $query);
 $solicitudes = [];
 
 while($fila = mysqli_fetch_assoc($resultado)){

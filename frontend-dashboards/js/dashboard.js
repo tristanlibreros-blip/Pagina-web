@@ -30,10 +30,12 @@ function verificarSesionDashboard(){
             document.getElementById('vista-desarrollador').style.display = 'block'
             cargarAnunciosDesarrollador()
             cargarSolicitudesDesarrollador()
+            cargarProyectosDesarrollador()
         } else {
             document.getElementById('vista-cliente').style.display = 'block'
             cargarSolicitudesCliente()
             cargarProyectosCliente()
+            cargarCalificacionesCliente()
         }
     })
     .catch(() => {
@@ -88,6 +90,52 @@ function cargarSolicitudesDesarrollador(){
     .catch(() => console.log('Error al cargar solicitudes'))
 }
 
+function cargarProyectosDesarrollador(){
+    if(!window.usuarioId) return
+
+    fetch(`../backend-servicios/proyectos/ver-proyectos.php?desarrollador_id=${window.usuarioId}`)
+    .then(res => res.json())
+    .then(data => {
+        const lista = document.getElementById('lista-proyectos-dev')
+
+        if(!data.success || data.proyectos.length === 0){
+            lista.innerHTML = '<p class="empty-state">No tienes proyectos activos aún</p>'
+            return
+        }
+
+        lista.innerHTML = ''
+
+        data.proyectos.forEach(proj => {
+            lista.innerHTML += `
+                <div class="proyecto-card">
+                    <div class="proyecto-header">
+                        <h3>${proj.nombre}</h3>
+                        <span class="badge badge-progreso">${proj.estado}</span>
+                    </div>
+
+                    <p class="proyecto-info">Cliente: ${proj.cliente_nombre}</p>
+                    <p>${proj.descripcion}</p>
+
+                    ${proj.estado === 'terminado' ? `
+                    <p class="badge badge-terminado">Proyecto terminado ✅</p>
+                    ` : `
+                        <div class="subir-archivo">
+                            <input type="file" id="archivo-${proj.id}">
+                            <button class="btn btn-azul" onclick="subirArchivo(${proj.id})">
+                                Subir avance
+                            </button>
+                            <button class="btn btn-verde" onclick="finalizarProyecto(${proj.id})">
+                                Finalizar proyecto
+                            </button>
+                        </div>
+                    `}
+                </div>
+            `
+        })
+    })
+    .catch(error => console.error(error))
+}
+
 // Cargar solicitudes enviadas por el cliente
 function cargarSolicitudesCliente(){
     if(!window.usuarioId) return
@@ -123,7 +171,7 @@ function cargarSolicitudesCliente(){
 function cargarProyectosCliente(){
     if(!window.usuarioId) return
 
-    fetch(`../backend-servicios/archivos/ver-archivos.php?cliente_id=${window.usuarioId}`)
+    fetch(`../backend-servicios/proyectos/ver-proyectos.php?cliente_id=${window.usuarioId}`)
     .then(res => res.json())
     .then(data => {
         const lista = document.getElementById('lista-proyectos-cliente')
@@ -137,7 +185,7 @@ function cargarProyectosCliente(){
             const archivos = proj.archivos.map(a => `
                 <div class="archivo-item">
                     <span>📄 ${a.nombre} — ${a.fecha}</span>
-                    <button class="btn btn-azul" onclick="window.location='../../backend-servicios/archivos/descargar.php?archivo_id=${a.id}'">⬇ Descargar</button>
+                    <button class="btn btn-azul" onclick="window.location='../backend-servicios/archivos/descargar.php?archivo_id=${a.id}'">⬇ Descargar</button>
                 </div>
             `).join('')
 
@@ -154,4 +202,93 @@ function cargarProyectosCliente(){
         })
     })
     .catch(() => console.log('Error al cargar proyectos'))
+}
+function finalizarProyecto(proyectoId){
+
+    fetch('../backend-servicios/proyectos/finalizar-proyecto.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            proyecto_id: proyectoId
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+
+        if(data.success){
+
+            alert('Proyecto finalizado ✅')
+
+            cargarProyectosDesarrollador()
+            cargarProyectosCliente()
+
+        }else{
+
+            alert(data.mensaje)
+        }
+    })
+    .catch(error => {
+        console.error(error)
+        alert('Error de conexión')
+    })
+}
+function cargarCalificacionesCliente(){
+    if(!window.usuarioId) return
+
+    fetch(`../backend-servicios/proyectos/ver-proyectos.php?cliente_id=${window.usuarioId}`)
+    .then(res => res.json())
+    .then(data => {
+        const lista = document.getElementById('lista-calificaciones')
+        lista.innerHTML = ''
+
+        const terminados = data.proyectos.filter(p => p.estado === 'terminado')
+
+        if(terminados.length === 0){
+            lista.innerHTML = '<p class="empty-state">Sin proyectos terminados aún</p>'
+            return
+        }
+
+        terminados.forEach(proj => {
+            lista.innerHTML += `
+                <div class="calificacion-card">
+                    <h3>${proj.nombre}</h3>
+                    <p>Desarrollador: ${proj.desarrollador_nombre}</p>
+
+                    <div class="estrellas" id="estrellas-${proj.id}" data-seleccion="0">
+                        <span class="estrella" onclick="calificar('estrellas-${proj.id}', 1)">★</span>
+                        <span class="estrella" onclick="calificar('estrellas-${proj.id}', 2)">★</span>
+                        <span class="estrella" onclick="calificar('estrellas-${proj.id}', 3)">★</span>
+                        <span class="estrella" onclick="calificar('estrellas-${proj.id}', 4)">★</span>
+                        <span class="estrella" onclick="calificar('estrellas-${proj.id}', 5)">★</span>
+                    </div>
+
+                    <textarea placeholder="Escribe tu comentario..."></textarea>
+
+                    <button class="btn btn-verde" onclick="enviarCalificacion(this, ${proj.id}, ${proj.desarrollador_id})">
+                        Enviar calificación
+                    </button>
+                </div>
+            `
+        })
+    })
+}
+function cerrarSesion(){
+
+    fetch('../backend-auth/auth/cerrar_sesion.php', {
+        credentials: 'include'
+    })
+    .then(res => res.json())
+    .then(data => {
+
+        if(data.success){
+
+            window.location =
+            '../frontend-diseño/login.html'
+        }
+    })
+    .catch(error => {
+        console.error(error)
+    })
 }

@@ -5,7 +5,7 @@ function responderSolicitud(boton, respuesta, solicitudId){
     const card = boton.closest('.solicitud-card')
     const nombre = card.querySelector('h3').textContent
 
-    fetch('../../backend-servicios/solicitudes/responder-solicitud.php', {
+    fetch('../backend-servicios/solicitudes/responder-solicitud.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -34,19 +34,22 @@ function responderSolicitud(boton, respuesta, solicitudId){
 }
 
 // Subir archivo de avance
-function subirArchivo(inputId, proyectoId){
-    const archivo = document.getElementById(inputId).files[0]
+function subirArchivo(proyectoId){
+    const input = document.getElementById(`archivo-${proyectoId}`)
 
-    if(!archivo){
+    if(!input || input.files.length === 0){
         alert('Por favor selecciona un archivo')
         return
     }
+
+    const archivo = input.files[0]
 
     const formData = new FormData()
     formData.append('archivo', archivo)
     formData.append('proyecto_id', proyectoId)
 
-    fetch('../../backend-servicios/archivos/subir.php', {
+    
+    fetch('../backend-servicios/archivos/subir.php', {
         method: 'POST',
         body: formData
     })
@@ -54,15 +57,18 @@ function subirArchivo(inputId, proyectoId){
     .then(data => {
         if(data.success){
             alert(`📤 Archivo "${archivo.name}" subido correctamente ✅`)
-            document.getElementById(inputId).value = ''
+            input.value = ''
         } else {
             alert(data.mensaje || 'Error al subir el archivo')
         }
     })
-    .catch(() => alert('Error de conexión'))
+    .catch(error => {
+        console.error(error)
+        alert('Error de conexión')
+    })
 }
 
 // Descargar archivo
 function descargarArchivo(archivoId){
-    window.location = `../../backend-servicios/archivos/descargar.php?archivo_id=${archivoId}`
+    window.location = `../backend-servicios/archivos/descargar.php?archivo_id=${archivoId}`
 }

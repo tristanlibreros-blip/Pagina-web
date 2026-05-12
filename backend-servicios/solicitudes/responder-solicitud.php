@@ -7,7 +7,7 @@
 header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json');
 
-include '../conexion.php';
+include '../../backend-auth/conexion.php';
 
 $datos = json_decode(file_get_contents('php://input'));
 
@@ -16,16 +16,16 @@ if(!isset($datos->solicitud_id) || !isset($datos->estado) || !isset($datos->desa
     exit;
 }
 
-$solicitud_id    = mysqli_real_escape_string($conexion, $datos->solicitud_id);
-$estado          = mysqli_real_escape_string($conexion, $datos->estado);
-$desarrollador_id = mysqli_real_escape_string($conexion, $datos->desarrollador_id);
+$solicitud_id    = mysqli_real_escape_string($conn, $datos->solicitud_id);
+$estado          = mysqli_real_escape_string($conn, $datos->estado);
+$desarrollador_id = mysqli_real_escape_string($conn, $datos->desarrollador_id);
 
 // Verificar que la solicitud pertenece al desarrollador
 $check = "SELECT * FROM solicitudes 
           WHERE id = '$solicitud_id' 
           AND desarrollador_id = '$desarrollador_id'
           AND estado = 'pendiente'";
-$resultado = mysqli_query($conexion, $check);
+$resultado = mysqli_query($conn, $check);
 $solicitud = mysqli_fetch_assoc($resultado);
 
 if(!$solicitud){
@@ -35,17 +35,17 @@ if(!$solicitud){
 
 // Actualizar estado de la solicitud
 $update = "UPDATE solicitudes SET estado = '$estado' WHERE id = '$solicitud_id'";
-mysqli_query($conexion, $update);
+mysqli_query($conn, $update);
 
 // Si acepta → crear proyecto automáticamente
 if($estado === 'aceptada'){
     $cliente_id  = $solicitud['cliente_id'];
-    $descripcion = mysqli_real_escape_string($conexion, $solicitud['descripcion']);
+    $descripcion = mysqli_real_escape_string($conn, $solicitud['descripcion']);
 
     $proyecto = "INSERT INTO proyectos (solicitud_id, cliente_id, desarrollador_id, nombre, descripcion, estado)
                  VALUES ('$solicitud_id', '$cliente_id', '$desarrollador_id', 'Nuevo Proyecto', '$descripcion', 'en progreso')";
-    mysqli_query($conexion, $proyecto);
-    $proyecto_id = mysqli_insert_id($conexion);
+    mysqli_query($conn, $proyecto);
+    $proyecto_id = mysqli_insert_id($conn);
 
     echo json_encode(['success' => true, 'proyecto_id' => $proyecto_id]);
 } else {

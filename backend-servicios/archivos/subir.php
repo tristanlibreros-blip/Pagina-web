@@ -7,15 +7,15 @@
 header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json');
 
-include '../conexion.php';
+include '../../backend-auth/conexion.php';
 
 if(!isset($_POST['proyecto_id']) || !isset($_FILES['archivo'])){
     echo json_encode(['success' => false, 'mensaje' => 'Faltan datos']);
     exit;
 }
 
-$proyecto_id = mysqli_real_escape_string($conexion, $_POST['proyecto_id']);
-$nombre      = mysqli_real_escape_string($conexion, $_FILES['archivo']['name']);
+$proyecto_id = mysqli_real_escape_string($conn, $_POST['proyecto_id']);
+$nombre      = mysqli_real_escape_string($conn, $_FILES['archivo']['name']);
 
 // Verificar tamaño máximo (5MB)
 if($_FILES['archivo']['size'] > 5 * 1024 * 1024){
@@ -25,12 +25,12 @@ if($_FILES['archivo']['size'] > 5 * 1024 * 1024){
 
 // Leer el archivo y convertirlo a binario
 $archivo = file_get_contents($_FILES['archivo']['tmp_name']);
-$archivo = mysqli_real_escape_string($conexion, $archivo);
+$archivo = mysqli_real_escape_string($conn, $archivo);
 
 $query = "INSERT INTO archivos (proyecto_id, nombre, archivo) 
           VALUES ('$proyecto_id', '$nombre', '$archivo')";
 
-if(mysqli_query($conexion, $query)){
+if(mysqli_query($conn, $query)){
     echo json_encode(['success' => true]);
 } else {
     echo json_encode(['success' => false, 'mensaje' => 'Error al subir el archivo']);

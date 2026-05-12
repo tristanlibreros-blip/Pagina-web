@@ -25,7 +25,7 @@ function enviarCalificacion(boton, proyectoId, desarrolladorId){
         return
     }
 
-    fetch('../../backend-servicios/calificaciones/calificar.php', {
+    fetch('../backend-servicios/calificaciones/calificar.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

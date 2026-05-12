@@ -4,16 +4,16 @@
 // Descarga el archivo guardado en la DB
 // No responde JSON, descarga el archivo directamente
 
-include '../conexion.php';
+include '../../backend-auth/conexion.php';
 
 if(!isset($_GET['archivo_id'])){
     die('Falta el ID del archivo');
 }
 
-$archivo_id = mysqli_real_escape_string($conexion, $_GET['archivo_id']);
+$archivo_id = mysqli_real_escape_string($conn, $_GET['archivo_id']);
 
 $query = "SELECT nombre, archivo FROM archivos WHERE id = '$archivo_id'";
-$resultado = mysqli_query($conexion, $query);
+$resultado = mysqli_query($conn, $query);
 $archivo = mysqli_fetch_assoc($resultado);
 
 if(!$archivo){

@@ -6,14 +6,14 @@
 header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json');
 
-include '../conexion.php';
+include '../../backend-auth/conexion.php';
 
 if(!isset($_GET['desarrollador_id'])){
     echo json_encode(['success' => false, 'mensaje' => 'Falta el ID del desarrollador']);
     exit;
 }
 
-$desarrollador_id = mysqli_real_escape_string($conexion, $_GET['desarrollador_id']);
+$desarrollador_id = mysqli_real_escape_string($conn, $_GET['desarrollador_id']);
 
 // Obtener todas las calificaciones con info del cliente y proyecto
 $query = "SELECT c.id, c.estrellas, c.comentario, c.fecha,
@@ -25,7 +25,7 @@ $query = "SELECT c.id, c.estrellas, c.comentario, c.fecha,
           WHERE c.desarrollador_id = '$desarrollador_id'
           ORDER BY c.fecha DESC";
 
-$resultado = mysqli_query($conexion, $query);
+$resultado = mysqli_query($conn, $query);
 $calificaciones = [];
 $total_estrellas = 0;
 

@@ -9,12 +9,12 @@ if(!isset($_POST['anuncio_id']) || !isset($_POST['desarrollador_id'])){
     exit;
 }
 
-$anuncio_id      = mysqli_real_escape_string($conexion, $_POST['anuncio_id']);
-$desarrollador_id = mysqli_real_escape_string($conexion, $_POST['desarrollador_id']);
-$titulo          = mysqli_real_escape_string($conexion, $_POST['titulo'] ?? '');
-$descripcion     = mysqli_real_escape_string($conexion, $_POST['descripcion'] ?? '');
-$especialidad    = mysqli_real_escape_string($conexion, $_POST['especialidad'] ?? '');
-$lenguajes       = mysqli_real_escape_string($conexion, $_POST['lenguajes'] ?? '[]');
+$anuncio_id      = mysqli_real_escape_string($conn, $_POST['anuncio_id']);
+$desarrollador_id = mysqli_real_escape_string($conn, $_POST['desarrollador_id']);
+$titulo          = mysqli_real_escape_string($conn, $_POST['titulo'] ?? '');
+$descripcion     = mysqli_real_escape_string($conn, $_POST['descripcion'] ?? '');
+$especialidad    = mysqli_real_escape_string($conn, $_POST['especialidad'] ?? '');
+$lenguajes       = mysqli_real_escape_string($conn, $_POST['lenguajes'] ?? '[]');
 $precio          = (float)($_POST['precio'] ?? 0);
 
 $query = "UPDATE anuncios SET 
@@ -27,7 +27,7 @@ $query = "UPDATE anuncios SET
 
 // Actualizar banner si se subió uno nuevo
 if(isset($_FILES['banner']) && $_FILES['banner']['error'] === 0){
-    $banner = mysqli_real_escape_string($conexion, file_get_contents($_FILES['banner']['tmp_name']));
+    $banner = mysqli_real_escape_string($conn, file_get_contents($_FILES['banner']['tmp_name']));
     $query = "UPDATE anuncios SET 
               titulo = '$titulo', descripcion = '$descripcion',
               especialidad = '$especialidad', lenguajes = '$lenguajes',
@@ -35,7 +35,7 @@ if(isset($_FILES['banner']) && $_FILES['banner']['error'] === 0){
               WHERE id = '$anuncio_id' AND desarrollador_id = '$desarrollador_id'";
 }
 
-if(mysqli_query($conexion, $query)){
+if(mysqli_query($conn, $query)){
     echo json_encode(['success' => true]);
 } else {
     echo json_encode(['success' => false, 'mensaje' => 'Error al editar el anuncio']);
