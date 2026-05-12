@@ -16,7 +16,7 @@ document.querySelector('form')
    }
 
    // Manda los datos al backend
-   fetch('../../backend/auth/login.php', {
+   fetch('../../backend-auth/auth/login.php', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(datos)

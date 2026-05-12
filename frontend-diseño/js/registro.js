@@ -29,7 +29,7 @@ addForm.addEventListener("submit", (e) => {
    }
 
    // Manda los datos al backend
-   fetch('../../backend/auth/registro.php', {
+   fetch('../../backend-auth/auth/registro.php', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(datos)
