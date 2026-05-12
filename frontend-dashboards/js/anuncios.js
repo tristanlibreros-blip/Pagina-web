@@ -69,7 +69,7 @@ function guardarAnuncio(){
     formData.append('precio', precio)
     if(bannerFile) formData.append('banner', bannerFile)
 
-    fetch('../../compañero3-backend-auth/anuncios/crear-anuncio.php', {
+    fetch('../../backend-auth/anuncios/crear-anuncio.php', {
         method: 'POST',
         body: formData
     })
@@ -90,7 +90,7 @@ function guardarAnuncio(){
 function cargarAnunciosDesarrollador(){
     if(!window.usuarioId) return
 
-    fetch(`../../compañero3-backend-auth/anuncios/ver-anuncios.php?desarrollador_id=${window.usuarioId}`)
+    fetch(`../../backend-auth/anuncios/ver-anuncios.php?desarrollador_id=${window.usuarioId}`)
     .then(res => res.json())
     .then(data => {
         const lista = document.getElementById('lista-anuncios-dev')
@@ -126,7 +126,7 @@ function cargarAnunciosDesarrollador(){
 function eliminarAnuncio(id){
     if(!confirm('¿Seguro que quieres eliminar este anuncio?')) return
 
-    fetch('../../compañero3-backend-auth/anuncios/eliminar-anuncio.php', {
+    fetch('../../backend-auth/anuncios/eliminar-anuncio.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ anuncio_id: id, desarrollador_id: window.usuarioId })

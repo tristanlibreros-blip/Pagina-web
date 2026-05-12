@@ -1,7 +1,7 @@
 <?php
 // Arrancamos la sesión para "recordar" al usuario mientras navega
 session_start(); 
-include 'conexion.php';
+include '../conexion.php';
 
 // Recibir los datos JSON del frontend
 $datos = json_decode(file_get_contents('php://input'), true);
@@ -12,7 +12,7 @@ if ($datos) {
     $contrasena_ingresada = $datos['contraseña']; 
 
     // Preparamos la consulta para buscar al usuario por su nombre de usuario
-    $stmt = $conn->prepare("SELECT id, nombre, contrasena, rol FROM usuarios WHERE usuario = ?");
+    $stmt = $conn->prepare("SELECT id, nombre, contrasena, tipo FROM usuarios WHERE usuario = ?");
     $stmt->bind_param("s", $usuario);
     $stmt->execute();
     $resultado = $stmt->get_result();
@@ -27,13 +27,13 @@ if ($datos) {
             // ¡Éxito! Guardamos sus datos en la sesión del servidor
             $_SESSION['usuario_id'] = $user_db['id'];
             $_SESSION['usuario_nombre'] = $user_db['nombre'];
-            $_SESSION['usuario_rol'] = $user_db['rol'];
+            $_SESSION['usuario_rol'] = $user_db['tipo'];
 
             // Le respondemos al frontend que todo salió bien y le pasamos el rol
             echo json_encode([
                 "success" => true, 
                 "mensaje" => "Bienvenido " . $user_db['nombre'],
-                "tipo" => $user_db['rol'] 
+                "tipo" => $user_db['tipo'] 
             ]);
         } else {
             // Contraseña mal escrita

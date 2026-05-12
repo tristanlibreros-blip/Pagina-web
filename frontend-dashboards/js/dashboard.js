@@ -5,11 +5,11 @@ document.addEventListener('DOMContentLoaded', function(){
 })
 
 function verificarSesionDashboard(){
-    fetch('../../compañero3-backend-auth/auth/sesion.php')
+    fetch('../../backend-auth/auth/sesion.php')
     .then(res => res.json())
     .then(data => {
         if(!data.logueado){
-            window.location = '../compañero1-frontend-diseno/login.html'
+            window.location = '../frontend-diseno/login.html'
             return
         }
 
@@ -35,7 +35,7 @@ function verificarSesionDashboard(){
         }
     })
     .catch(() => {
-        window.location = '../compañero1-frontend-diseno/login.html'
+        window.location = '../frontend-diseno/login.html'
     })
 }
 
@@ -54,7 +54,7 @@ function cerrarModalDetalles(){
 function cargarSolicitudesDesarrollador(){
     if(!window.usuarioId) return
 
-    fetch(`../../compañero4-backend-servicios/solicitudes/ver-solicitudes.php?desarrollador_id=${window.usuarioId}`)
+    fetch(`../../backend-servicios/solicitudes/ver-solicitudes.php?desarrollador_id=${window.usuarioId}`)
     .then(res => res.json())
     .then(data => {
         const lista = document.getElementById('lista-solicitudes-dev')
@@ -90,7 +90,7 @@ function cargarSolicitudesDesarrollador(){
 function cargarSolicitudesCliente(){
     if(!window.usuarioId) return
 
-    fetch(`../../compañero4-backend-servicios/solicitudes/ver-solicitudes.php?cliente_id=${window.usuarioId}`)
+    fetch(`../../backend-servicios/solicitudes/ver-solicitudes.php?cliente_id=${window.usuarioId}`)
     .then(res => res.json())
     .then(data => {
         const lista = document.getElementById('lista-solicitudes-cliente')
@@ -121,7 +121,7 @@ function cargarSolicitudesCliente(){
 function cargarProyectosCliente(){
     if(!window.usuarioId) return
 
-    fetch(`../../compañero4-backend-servicios/archivos/ver-archivos.php?cliente_id=${window.usuarioId}`)
+    fetch(`../../backend-servicios/archivos/ver-archivos.php?cliente_id=${window.usuarioId}`)
     .then(res => res.json())
     .then(data => {
         const lista = document.getElementById('lista-proyectos-cliente')
@@ -135,7 +135,7 @@ function cargarProyectosCliente(){
             const archivos = proj.archivos.map(a => `
                 <div class="archivo-item">
                     <span>📄 ${a.nombre} — ${a.fecha}</span>
-                    <button class="btn btn-azul" onclick="window.location='../../compañero4-backend-servicios/archivos/descargar.php?archivo_id=${a.id}'">⬇ Descargar</button>
+                    <button class="btn btn-azul" onclick="window.location='../../backend-servicios/archivos/descargar.php?archivo_id=${a.id}'">⬇ Descargar</button>
                 </div>
             `).join('')
 
