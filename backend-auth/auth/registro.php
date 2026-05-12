@@ -1,5 +1,5 @@
 <?php
-include 'conexion.php';
+include '../conexion.php';
 
 // Recibir los datos JSON del frontend
 $datos = json_decode(file_get_contents('php://input'), true);

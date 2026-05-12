@@ -9,7 +9,7 @@ function verificarSesionDashboard(){
     .then(res => res.json())
     .then(data => {
         if(!data.logueado){
-            window.location = '../frontend-diseno/login.html'
+            window.location = '../frontend-diseño/login.html'
             return
         }
 
@@ -35,7 +35,7 @@ function verificarSesionDashboard(){
         }
     })
     .catch(() => {
-        window.location = '../frontend-diseno/login.html'
+        window.location = '../frontend-diseño/login.html'
     })
 }
 
