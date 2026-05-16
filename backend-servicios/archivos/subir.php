@@ -27,6 +27,26 @@ if($_FILES['archivo']['size'] > 5 * 1024 * 1024){
 $archivo = file_get_contents($_FILES['archivo']['tmp_name']);
 $archivo = mysqli_real_escape_string($conn, $archivo);
 
+$check = "
+SELECT id
+FROM archivos
+WHERE proyecto_id = '$proyecto_id'
+AND estado = 'pendiente'
+LIMIT 1
+";
+
+$resCheck = mysqli_query($conn, $check);
+
+if(mysqli_num_rows($resCheck) > 0){
+
+    echo json_encode([
+        'success' => false,
+        'mensaje' => 'Ya tienes un avance pendiente de aprobación'
+    ]);
+
+    exit;
+}
+
 $query = "INSERT INTO archivos (proyecto_id, nombre, archivo) 
           VALUES ('$proyecto_id', '$nombre', '$archivo')";
 

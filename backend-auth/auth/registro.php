@@ -10,6 +10,33 @@ if ($datos) {
     $email = $datos['email'];
     $telefono = $datos['telefono'];
     $tipo = $datos['tipo'];
+    // Validar usuario existente
+    $checkUsuario = $conn->prepare("SELECT id FROM usuarios WHERE usuario = ?");
+    $checkUsuario->bind_param("s", $usuario);
+    $checkUsuario->execute();
+    $resUsuario = $checkUsuario->get_result();
+
+    if($resUsuario->num_rows > 0){
+        echo json_encode([
+            "success" => false,
+            "mensaje" => "Ese usuario ya existe"
+        ]);
+        exit;
+    }
+
+    // Validar email existente
+    $checkEmail = $conn->prepare("SELECT id FROM usuarios WHERE email = ?");
+    $checkEmail->bind_param("s", $email);
+    $checkEmail->execute();
+    $resEmail = $checkEmail->get_result();
+
+    if($resEmail->num_rows > 0){
+        echo json_encode([
+            "success" => false,
+            "mensaje" => "Ese correo ya está registrado"
+        ]);
+        exit;
+    }
     // Encriptamos la contraseña por seguridad
     $pass_hash = password_hash($datos['contrasena'], PASSWORD_BCRYPT);
 

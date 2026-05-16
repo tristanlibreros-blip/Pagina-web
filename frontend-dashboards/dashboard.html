@@ -15,10 +15,18 @@
         </div>
         <nav>
             <ul class="nav-links">
-                <li><a href="../frontend-diseño/index.html">Inicio</a></li>
-                <li id="nav-perfil"><a href="perfil.html" id="nav-nombre">👤 Usuario</a></li>
-                <li id="nav-dashboard"><a href="dashboard.html">Mi cuenta</a></li>
-                <li id="nav-cerrar"><a href="#" onclick="cerrarSesion()">Cerrar sesión</a></li>
+                <li id="nav-inicio"><a href="../frontend-diseño/index.html">Inicio</a></li>
+                <li id="nav-login"><a href="../frontend-diseño/login.html">Login</a></li>
+                <li id="nav-registro"><a href="../frontend-diseño/registro.html">Registro</a></li>
+                <li id="nav-perfil" style="display:none">
+                    <a href="#" id="nav-nombre">👤 Usuario</a>
+                </li>
+                <li id="nav-dashboard" style="display:none">
+                    <a href="dashboard.html">Mi cuenta</a>
+                </li>
+                <li id="nav-cerrar" style="display:none">
+                    <a href="#" onclick="cerrarSesion()">Cerrar sesión</a>
+                </li>
             </ul>
         </nav>
     </header>
@@ -30,7 +38,7 @@
         <div id="vista-desarrollador" style="display:none">
 
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px">
-                <h2 style="color:var(--color-texto)">Panel Desarrollador 👨‍💻</h2>
+                <h2 style="color:var(--color-texto)"></h2>
                 <button class="btn btn-primario" onclick="abrirModalAnuncio()">➕ Crear Anuncio</button>
             </div>
 
@@ -46,7 +54,7 @@
             <div class="seccion">
                 <h2>📩 Solicitudes Recibidas</h2>
                 <div id="lista-solicitudes-dev">
-                    <p class="empty-state">Cargando solicitudes...</p>
+                    <p class="empty-state">No hay solicitudes recibidas aún</p>
                 </div>
             </div>
 
@@ -54,7 +62,7 @@
             <div class="seccion">
                 <h2>🚀 Mis Proyectos Activos</h2>
                 <div id="lista-proyectos-dev">
-                    <p class="empty-state">Cargando proyectos...</p>
+                    <p class="empty-state">No hay proyectos activos aún</p>
                 </div>
             </div>
         </div>
@@ -62,13 +70,13 @@
         <!-- ===== VISTA CLIENTE ===== -->
         <div id="vista-cliente" style="display:none">
 
-            <h2 style="color:var(--color-texto); margin-bottom:20px">Panel Cliente 👤</h2>
+            <h2 style="color:var(--color-texto); margin-bottom:20px"></h2>
 
             <!-- Mis solicitudes enviadas -->
             <div class="seccion">
                 <h2>📨 Mis Solicitudes Enviadas</h2>
                 <div id="lista-solicitudes-cliente">
-                    <p class="empty-state">Cargando solicitudes...</p>
+                    <p class="empty-state">No hay solicitudes enviadas aún</p>
                 </div>
             </div>
 
@@ -76,7 +84,7 @@
             <div class="seccion">
                 <h2>📁 Mis Proyectos y Avances</h2>
                 <div id="lista-proyectos-cliente">
-                    <p class="empty-state">Cargando proyectos...</p>
+                    <p class="empty-state">No hay proyectos aún</p>
                 </div>
             </div>
 
@@ -169,5 +177,6 @@
     <script src="js/solicitudes.js"></script>
     <script src="js/calificacion.js"></script>
     <script src="js/anuncios.js"></script>
+    <script src="../frontend-diseño/js/navbar.js"></script>
 </body>
 </html>

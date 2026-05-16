@@ -452,3 +452,10 @@ form .boton input:hover { background: var(--gradiente); }
 body{
   background: var(--gradiente);
 }
+.paginacion{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:15px;
+    margin-top:20px;
+}

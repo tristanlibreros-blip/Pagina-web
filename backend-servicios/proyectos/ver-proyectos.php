@@ -35,10 +35,10 @@ while($fila = mysqli_fetch_assoc($resultado)){
     $proyecto_id = $fila['id'];
 
     $queryArchivos = "
-        SELECT id, nombre, fecha
-        FROM archivos
-        WHERE proyecto_id = '$proyecto_id'
-        ORDER BY fecha DESC
+    SELECT id, nombre, fecha, estado, razon_rechazo
+    FROM archivos
+    WHERE proyecto_id = '$proyecto_id'
+    ORDER BY fecha DESC
     ";
 
     $resArchivos = mysqli_query($conn, $queryArchivos);
@@ -50,6 +50,17 @@ while($fila = mysqli_fetch_assoc($resultado)){
     }
 
     $fila['archivos'] = $archivos;
+
+    $queryCalificacion = "
+        SELECT estrellas, comentario, fecha
+        FROM calificaciones
+        WHERE proyecto_id = '$proyecto_id'
+        LIMIT 1
+    ";
+
+    $resCalificacion = mysqli_query($conn, $queryCalificacion);
+
+    $fila['calificacion'] = mysqli_fetch_assoc($resCalificacion);
 
     $proyectos[] = $fila;
 }

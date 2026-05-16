@@ -56,36 +56,80 @@ function cerrarModalDetalles(){
 
 // Cargar solicitudes recibidas por el desarrollador
 function cargarSolicitudesDesarrollador(){
+
     if(!window.usuarioId) return
 
     fetch(`../backend-servicios/solicitudes/ver-solicitudes.php?desarrollador_id=${window.usuarioId}`)
+
     .then(res => res.json())
+
     .then(data => {
-        const lista = document.getElementById('lista-solicitudes-dev')
+        const lista =
+        document.getElementById('lista-solicitudes-dev')
+
         if(!data.success || data.solicitudes.length === 0){
-            lista.innerHTML = '<p class="empty-state">No tienes solicitudes pendientes 😊</p>'
+            lista.innerHTML =
+            '<p class="empty-state">No tienes solicitudes pendientes 😊</p>'
             return
         }
-
         lista.innerHTML = ''
-        data.solicitudes.forEach(sol => {
-            lista.innerHTML += `
-                <div class="solicitud-card" data-id="${sol.id}">
-                    <div class="solicitud-info">
-                        <h3>${sol.cliente_nombre}</h3>
-                        <p>${sol.descripcion}</p>
-                        <p style="margin-top:5px; font-size:0.8rem; color:#aaa">${sol.fecha}</p>
+        paginar(
+            data.solicitudes,
+            'lista-solicitudes-dev',
+            sol => {
+                return `
+                    <div class="solicitud-card" data-id="${sol.id}">
+                        <div class="solicitud-info">
+                            <h3>
+                                ${sol.cliente_nombre}
+                            </h3>
+                            <p>
+                                ${sol.descripcion}
+                            </p>
+                            <p style="margin-top:5px; font-size:0.8rem; color:#aaa">
+                                ${sol.fecha}
+                            </p>
+                        </div>
+                        <div class="solicitud-botones">
+                            ${
+                                sol.estado === 'pendiente'
+                                ? `
+                                    <button
+                                    class="btn btn-azul"
+                                    onclick="verDetalles('${sol.cliente_nombre}', '${sol.descripcion}')">
+
+                                        Ver más
+
+                                    </button>
+                                    <button
+                                    class="btn btn-verde"
+                                    onclick="responderSolicitud(this, 'aceptada', ${sol.id})">
+
+                                        Aceptar ✅
+
+                                    </button>
+                                    <button
+                                    class="btn btn-rojo"
+                                    onclick="responderSolicitud(this, 'rechazada', ${sol.id})">
+                                        Rechazar ❌
+                                    </button>
+                                  `
+                                : `
+                                    <span class="badge badge-${sol.estado}">
+                                        ${sol.estado}
+                                        ${
+                                            sol.estado === 'aceptada'
+                                            ? '✅'
+                                            : '❌'
+                                        }
+                                    </span>
+                                  `
+                            }
+                        </div>
                     </div>
-                    <div class="solicitud-botones">
-                        ${sol.estado === 'pendiente' ? `
-                            <button class="btn btn-azul" onclick="verDetalles('${sol.cliente_nombre}', '${sol.descripcion}')">Ver más</button>
-                            <button class="btn btn-verde" onclick="responderSolicitud(this, 'aceptada', ${sol.id})">Aceptar ✅</button>
-                            <button class="btn btn-rojo" onclick="responderSolicitud(this, 'rechazada', ${sol.id})">Rechazar ❌</button>
-                        ` : `<span class="badge badge-${sol.estado}">${sol.estado} ${sol.estado === 'aceptada' ? '✅' : '❌'}</span>`}
-                    </div>
-                </div>
-            `
-        })
+                `
+            }
+        )
     })
     .catch(() => console.log('Error al cargar solicitudes'))
 }
@@ -96,6 +140,7 @@ function cargarProyectosDesarrollador(){
     fetch(`../backend-servicios/proyectos/ver-proyectos.php?desarrollador_id=${window.usuarioId}`)
     .then(res => res.json())
     .then(data => {
+
         const lista = document.getElementById('lista-proyectos-dev')
 
         if(!data.success || data.proyectos.length === 0){
@@ -104,34 +149,72 @@ function cargarProyectosDesarrollador(){
         }
 
         lista.innerHTML = ''
+        paginar(
+            data.proyectos,
+            'lista-proyectos-dev',
+            proj => {
+                const archivos = proj.archivos.map(a => `
+                    <div class="archivo-item">
+                        <span>📄 ${a.nombre} — ${a.fecha}</span>
 
-        data.proyectos.forEach(proj => {
-            lista.innerHTML += `
+                        ${
+                            a.estado === 'aprobado'
+                            ? `<span class="badge badge-aceptada">Aprobado ✅</span>`
+                            : a.estado === 'rechazado'
+                            ? `
+                                <span class="badge badge-rechazada">Rechazado ❌</span>
+                                <p>Razón: ${a.razon_rechazo || 'Sin razón escrita'}</p>
+                            `
+                            : `<span class="badge badge-pendiente">Pendiente 🟡</span>`
+                        }
+                    </div>
+                `).join('')
+                return `
                 <div class="proyecto-card">
                     <div class="proyecto-header">
                         <h3>${proj.nombre}</h3>
-                        <span class="badge badge-progreso">${proj.estado}</span>
+                        <span class="badge badge-${proj.estado === 'en progreso' ? 'progreso' : proj.estado}">
+                            ${proj.estado}
+                        </span>
                     </div>
-
-                    <p class="proyecto-info">Cliente: ${proj.cliente_nombre}</p>
+                    <p class="proyecto-info">
+                        Cliente: ${proj.cliente_nombre}
+                    </p>
                     <p>${proj.descripcion}</p>
-
-                    ${proj.estado === 'terminado' ? `
-                    <p class="badge badge-terminado">Proyecto terminado ✅</p>
-                    ` : `
+                    ${
+                        proj.archivos.length > 0
+                        ? `<p class="proyecto-info">Archivos subidos:</p>${archivos}`
+                        : `<p class="proyecto-info">Aún no has subido archivos</p>`
+                    }
+                    ${
+                        proj.estado === 'terminado'
+                        ? `
+                            <p class="badge badge-terminado">
+                                Proyecto terminado ✅
+                            </p>
+                          `
+                        : `
                         <div class="subir-archivo">
                             <input type="file" id="archivo-${proj.id}">
-                            <button class="btn btn-azul" onclick="subirArchivo(${proj.id})">
+
+                            <button
+                            class="btn btn-azul"
+                            onclick="subirArchivo(${proj.id})">
                                 Subir avance
                             </button>
-                            <button class="btn btn-verde" onclick="finalizarProyecto(${proj.id})">
+
+                            <button
+                            class="btn btn-verde"
+                            onclick="finalizarProyecto(${proj.id})">
                                 Finalizar proyecto
                             </button>
                         </div>
-                    `}
+                          `
+                    }
                 </div>
-            `
-        })
+                `
+            }
+        )
     })
     .catch(error => console.error(error))
 }
@@ -143,26 +226,40 @@ function cargarSolicitudesCliente(){
     fetch(`../backend-servicios/solicitudes/ver-solicitudes.php?cliente_id=${window.usuarioId}`)
     .then(res => res.json())
     .then(data => {
+
         const lista = document.getElementById('lista-solicitudes-cliente')
+
         if(!data.success || data.solicitudes.length === 0){
             lista.innerHTML = '<p class="empty-state">No has enviado solicitudes aún 😊</p>'
             return
         }
 
         lista.innerHTML = ''
-        data.solicitudes.forEach(sol => {
-            lista.innerHTML += `
+        paginar(
+            data.solicitudes,
+            'lista-solicitudes-cliente',
+            sol => {
+                return `
                 <div class="solicitud-card">
                     <div class="solicitud-info">
-                        <h3>Solicitud a ${sol.desarrollador_nombre}</h3>
+                        <h3>
+                            Solicitud a ${sol.desarrollador_nombre}
+                        </h3>
                         <p>${sol.descripcion}</p>
                     </div>
                     <span class="badge badge-${sol.estado}">
-                        ${sol.estado === 'pendiente' ? 'Pendiente 🟡' : sol.estado === 'aceptada' ? 'Aceptada ✅' : 'Rechazada ❌'}
+                        ${
+                            sol.estado === 'pendiente'
+                            ? 'Pendiente 🟡'
+                            : sol.estado === 'aceptada'
+                            ? 'Aceptada ✅'
+                            : 'Rechazada ❌'
+                        }
                     </span>
                 </div>
-            `
-        })
+                `
+            }
+        )
     })
     .catch(() => console.log('Error al cargar solicitudes cliente'))
 }
@@ -170,36 +267,106 @@ function cargarSolicitudesCliente(){
 // Cargar proyectos del cliente con archivos
 function cargarProyectosCliente(){
     if(!window.usuarioId) return
-
     fetch(`../backend-servicios/proyectos/ver-proyectos.php?cliente_id=${window.usuarioId}`)
     .then(res => res.json())
     .then(data => {
-        const lista = document.getElementById('lista-proyectos-cliente')
+        const lista =
+        document.getElementById('lista-proyectos-cliente')
         if(!data.success || data.proyectos.length === 0){
-            lista.innerHTML = '<p class="empty-state">No tienes proyectos activos aún 😊</p>'
+            lista.innerHTML =
+            '<p class="empty-state">No tienes proyectos activos aún 😊</p>'
             return
         }
-
         lista.innerHTML = ''
-        data.proyectos.forEach(proj => {
-            const archivos = proj.archivos.map(a => `
-                <div class="archivo-item">
-                    <span>📄 ${a.nombre} — ${a.fecha}</span>
-                    <button class="btn btn-azul" onclick="window.location='../backend-servicios/archivos/descargar.php?archivo_id=${a.id}'">⬇ Descargar</button>
+        paginar(
+            data.proyectos,
+            'lista-proyectos-cliente',
+            proj => {
+                const archivos = proj.archivos.map(a => `
+                    <div class="archivo-item">
+                    <span>
+                        📄 ${a.nombre}
+                        —
+                        ${a.fecha}
+                    </span>
+                    <button
+                    class="btn btn-azul"
+                    onclick="window.location='../backend-servicios/archivos/descargar.php?archivo_id=${a.id}'">
+                        ⬇ Descargar
+                    </button>
+                    ${
+                        a.estado === 'pendiente' && proj.estado !== 'terminado'
+                        ? `
+                            <button
+                            class="btn btn-verde"
+                            onclick="responderAvance(${a.id}, 'aprobado')">
+                                Aprobar ✅
+                            </button>
+                            <button
+                            class="btn btn-rojo"
+                            onclick="responderAvance(${a.id}, 'rechazado')">
+                                Rechazar ❌
+                            </button>
+                        `
+                        : a.estado === 'aprobado'
+                        ? `
+                            <span class="badge badge-aceptada">
+                                Aprobado ✅
+                            </span>
+                        `
+                        : a.estado === 'rechazado'
+                        ? `
+                            <span class="badge badge-rechazada">
+                                Rechazado ❌
+                            </span>
+                            <p>Razón: ${a.razon_rechazo || 'Sin razón escrita'}</p>
+                        `
+                        : `
+                            <span class="badge badge-pendiente">
+                                Pendiente 🟡
+                            </span>
+                        `
+                    }
                 </div>
-            `).join('')
+                `).join('')
+                return `
+                    <div class="proyecto-card">
+                        <div class="proyecto-header">
+                            <h3>
+                                ${proj.nombre}
+                                -
+                                ${proj.desarrollador_nombre}
+                            </h3>
+                            <span class="badge badge-${proj.estado === 'en progreso' ? 'progreso' : proj.estado}">
+                                ${proj.estado}
+                            </span>
+                        </div>
 
-            lista.innerHTML += `
-                <div class="proyecto-card">
-                    <div class="proyecto-header">
-                        <h3>${proj.nombre} - ${proj.desarrollador_nombre}</h3>
-                        <span class="badge badge-${proj.estado === 'en progreso' ? 'progreso' : proj.estado}">${proj.estado}</span>
+                        <p class="proyecto-info">
+                            Desarrollador:
+                            ${proj.desarrollador_nombre}
+                            |
+                            Inicio:
+                            ${proj.fecha_inicio}
+                        </p>
+                        ${
+                            proj.archivos.length > 0
+                            ? `
+                                <p class="proyecto-info">
+                                    Archivos de avance:
+                                </p>
+                                ${archivos}
+                              `
+                            : `
+                                <p class="proyecto-info">
+                                    Sin archivos aún
+                                </p>
+                              `
+                        }
                     </div>
-                    <p class="proyecto-info">Desarrollador: ${proj.desarrollador_nombre} | Inicio: ${proj.fecha_inicio}</p>
-                    ${proj.archivos.length > 0 ? `<p class="proyecto-info">Archivos de avance:</p>${archivos}` : '<p class="proyecto-info">Sin archivos aún</p>'}
-                </div>
-            `
-        })
+                `
+            }
+        )
     })
     .catch(() => console.log('Error al cargar proyectos'))
 }
@@ -234,61 +401,124 @@ function finalizarProyecto(proyectoId){
         alert('Error de conexión')
     })
 }
-function cargarCalificacionesCliente(){
-    if(!window.usuarioId) return
+function paginar(listaDatos, contenedorId, renderItem, porPagina = 4){
 
-    fetch(`../backend-servicios/proyectos/ver-proyectos.php?cliente_id=${window.usuarioId}`)
-    .then(res => res.json())
-    .then(data => {
-        const lista = document.getElementById('lista-calificaciones')
-        lista.innerHTML = ''
+    let paginaActual = 1
 
-        const terminados = data.proyectos.filter(p => p.estado === 'terminado')
+    const totalPaginas =
+    Math.ceil(listaDatos.length / porPagina)
 
-        if(terminados.length === 0){
-            lista.innerHTML = '<p class="empty-state">Sin proyectos terminados aún</p>'
-            return
-        }
+    const contenedor =
+    document.getElementById(contenedorId)
 
-        terminados.forEach(proj => {
-            lista.innerHTML += `
-                <div class="calificacion-card">
-                    <h3>${proj.nombre}</h3>
-                    <p>Desarrollador: ${proj.desarrollador_nombre}</p>
+    function mostrarPagina(){
 
-                    <div class="estrellas" id="estrellas-${proj.id}" data-seleccion="0">
-                        <span class="estrella" onclick="calificar('estrellas-${proj.id}', 1)">★</span>
-                        <span class="estrella" onclick="calificar('estrellas-${proj.id}', 2)">★</span>
-                        <span class="estrella" onclick="calificar('estrellas-${proj.id}', 3)">★</span>
-                        <span class="estrella" onclick="calificar('estrellas-${proj.id}', 4)">★</span>
-                        <span class="estrella" onclick="calificar('estrellas-${proj.id}', 5)">★</span>
-                    </div>
+        const inicio =
+        (paginaActual - 1) * porPagina
 
-                    <textarea placeholder="Escribe tu comentario..."></textarea>
+        const fin = inicio + porPagina
 
-                    <button class="btn btn-verde" onclick="enviarCalificacion(this, ${proj.id}, ${proj.desarrollador_id})">
-                        Enviar calificación
-                    </button>
-                </div>
-            `
+        const datosPagina =
+        listaDatos.slice(inicio, fin)
+
+        contenedor.innerHTML = ''
+
+        datosPagina.forEach(item => {
+            contenedor.innerHTML += renderItem(item)
         })
-    })
+
+        contenedor.innerHTML += `
+            <div class="paginacion">
+
+                <button
+                class="btn btn-gris"
+                ${paginaActual === 1 ? 'disabled' : ''}
+                onclick="cambiarPagina('${contenedorId}', -1)">
+                    Anterior
+                </button>
+
+                <span>
+                    Página ${paginaActual}
+                    de ${totalPaginas}
+                </span>
+
+                <button
+                class="btn btn-gris"
+                ${paginaActual === totalPaginas ? 'disabled' : ''}
+                onclick="cambiarPagina('${contenedorId}', 1)">
+                    Siguiente
+                </button>
+
+            </div>
+        `
+    }
+
+    window[`pagina_${contenedorId}`] = {
+        paginaActual,
+        totalPaginas,
+        mostrarPagina,
+        listaDatos,
+        renderItem,
+        porPagina
+    }
+
+    mostrarPagina()
 }
-function cerrarSesion(){
 
-    fetch('../backend-auth/auth/cerrar_sesion.php', {
-        credentials: 'include'
-    })
-    .then(res => res.json())
-    .then(data => {
+function cambiarPagina(contenedorId, cambio){
 
-        if(data.success){
+    const pag =
+    window[`pagina_${contenedorId}`]
 
-            window.location =
-            '../frontend-diseño/login.html'
-        }
+    pag.paginaActual += cambio
+
+    if(pag.paginaActual < 1){
+        pag.paginaActual = 1
+    }
+
+    if(pag.paginaActual > pag.totalPaginas){
+        pag.paginaActual = pag.totalPaginas
+    }
+
+    const inicio =
+    (pag.paginaActual - 1) * pag.porPagina
+
+    const fin = inicio + pag.porPagina
+
+    const datosPagina =
+    pag.listaDatos.slice(inicio, fin)
+
+    const contenedor =
+    document.getElementById(contenedorId)
+
+    contenedor.innerHTML = ''
+
+    datosPagina.forEach(item => {
+        contenedor.innerHTML += pag.renderItem(item)
     })
-    .catch(error => {
-        console.error(error)
-    })
+
+    contenedor.innerHTML += `
+        <div class="paginacion">
+
+            <button
+            class="btn btn-gris"
+            ${pag.paginaActual === 1 ? 'disabled' : ''}
+            onclick="cambiarPagina('${contenedorId}', -1)">
+                Anterior
+            </button>
+
+            <span>
+                Página ${pag.paginaActual}
+                de ${pag.totalPaginas}
+            </span>
+
+            <button
+            class="btn btn-gris"
+            ${pag.paginaActual === pag.totalPaginas ? 'disabled' : ''}
+            onclick="cambiarPagina('${contenedorId}', 1)">
+                Siguiente
+            </button>
+
+        </div>
+    `
 }

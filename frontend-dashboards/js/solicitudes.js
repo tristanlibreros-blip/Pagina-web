@@ -67,6 +67,53 @@ function subirArchivo(proyectoId){
         alert('Error de conexión')
     })
 }
+function responderAvance(archivoId, estado){
+
+    let razon = ''
+
+    if(estado === 'rechazado'){
+
+        razon = prompt('Escribe la razón del rechazo')
+
+        if(!razon) return
+    }
+
+    fetch('../backend-servicios/archivos/responder-avance.php', {
+
+        method: 'POST',
+
+        headers:{
+            'Content-Type':'application/json'
+        },
+
+        body: JSON.stringify({
+            archivo_id: archivoId,
+            estado: estado,
+            razon: razon
+        })
+    })
+
+    .then(res => res.json())
+
+    .then(data => {
+
+        if(data.success){
+
+            alert('Respuesta enviada ✅')
+
+            cargarProyectosCliente()
+
+        }else{
+
+            alert(data.mensaje)
+        }
+    })
+
+    .catch(error => {
+        console.error(error)
+        alert('Error de conexión')
+    })
+}
 
 // Descargar archivo
 function descargarArchivo(archivoId){

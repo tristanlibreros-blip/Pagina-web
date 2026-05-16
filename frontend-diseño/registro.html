@@ -12,13 +12,23 @@
             <a href="index.html"><img src="gato.jpg" alt="ChambaTec"></a>
         </div>     
         <nav>
-            <ul class="nav-links" id="nav-links">
-                <li><a href="index.html">Inicio</a></li>
+            <ul class="nav-links">
+                <li id="nav-inicio"><a href="index.html">Inicio</a></li>
                 <li id="nav-login"><a href="login.html">Login</a></li>
                 <li id="nav-registro"><a href="registro.html">Registro</a></li>
-                <li id="nav-perfil" style="display:none"><a href="#" id="nav-nombre">👤 Usuario</a></li>
-                <li id="nav-dashboard" style="display:none"><a href="../frontend-dashboards/dashboard.html">Mi cuenta</a></li>
-                <li id="nav-cerrar" style="display:none"><a href="#" onclick="cerrarSesion()">Cerrar sesión</a></li>
+                <li id="nav-perfil" style="display:none">
+                <a href="#" id="nav-nombre">👤 Usuario</a>
+                </li>
+                    <li id="nav-dashboard" style="display:none">
+                        <a href="../frontend-dashboards/dashboard.html">
+                            Mi cuenta
+                        </a>
+                    </li>
+                    <li id="nav-cerrar" style="display:none">
+                        <a href="#" onclick="cerrarSesion()">
+                                Cerrar sesión
+                        </a>
+                </li>
             </ul>
         </nav>
     </header>
@@ -114,5 +124,6 @@
     </style>
 
     <script src="js/registro.js"></script>
+    <script src="js/navbar.js"></script>
 </body>
 </html>
