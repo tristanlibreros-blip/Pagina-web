@@ -1,60 +1,81 @@
-// Datos temporales
-const desarrolladores = [
-   { nombre: "Carlos", profesion: "Desarrollador Web", estrellas: 4.9, img: "gato.jpg" },
-   { nombre: "María", profesion: "E-commerce", estrellas: 4.7, img: "gato.jpg" },
-   { nombre: "Ibeth", profesion: "Apps", estrellas: 4.5, img: "gato.jpg" },
-   { nombre: "Tristan", profesion: "Diseño Web", estrellas: 4.3, img: "gato.jpg" },
-   { nombre: "Juan", profesion: "Backend", estrellas: 4.1, img: "gato.jpg" },
-]
-
-// Ordena por estrellas
-desarrolladores.sort((a, b) => b.estrellas - a.estrellas)
-
-// Genera las cards
-const lista = document.querySelector('.swiper-wrapper')
-lista.innerHTML = ''
-
-desarrolladores.forEach(dev => {
-   lista.innerHTML += `
-      <div class="items swiper-slide">
-         <img src="${dev.img}" alt="${dev.nombre}" class="usuario-img">
-         <h2 class="usuario-name">${dev.nombre}</h2>
-         <p class="usuario-profesion">${dev.profesion}</p>
-         <p class="usuario-estrellas">⭐ ${dev.estrellas}</p>
-         <button class="btn-mensaje" onclick="abrirModal('${dev.nombre}')">
-            Enviar solicitud
-         </button>
-      </div>
-   `
-})
-
-// Inicia Swiper DESPUÉS de generar las cards
-const swiper = new Swiper('.slider-wrapper', {
-   loop: true,
-   grabCursor: true,
-   spaceBetween: 30,
-   pagination: {
-      el: '.swiper-pagination',
-      clickable: true,
-      dynamicBullets: true,
-   },
-   navigation: {
-      nextEl: '.swiper-button-next',
-      prevEl: '.swiper-button-prev',
-   },
-   breakpoints: {
-      0: { slidesPerView: 1 },
-      620: { slidesPerView: 2 },
-      1024: { slidesPerView: 3 }
-   }
-})
-
-// Modal
-let desarrolladorSeleccionado = null
-
 document.addEventListener('DOMContentLoaded', () => {
+   cargarDesarrolladoresCarrusel()
    cargarAnunciosIndex()
 })
+
+function cargarDesarrolladoresCarrusel(){
+   fetch('../backend-auth/auth/ver-desarrolladores.php')
+   .then(res => res.json())
+   .then(data => {
+      const lista = document.querySelector('.swiper-wrapper')
+      lista.innerHTML = ''
+
+      if(!data.success || data.desarrolladores.length === 0){
+         lista.innerHTML = '<p>No hay desarrolladores disponibles</p>'
+         return
+      }
+
+      data.desarrolladores.forEach(dev => {
+         lista.innerHTML += `
+            <div class="items swiper-slide">
+               <img 
+                  src="${dev.tiene_foto == 1 
+                     ? `../backend-auth/auth/foto.php?usuario_id=${dev.id}` 
+                     : 'gato.jpg'}" 
+                  alt="${dev.nombre}" 
+                  class="usuario-img"
+               >
+
+               <h2 class="usuario-name">
+                  <a
+                  href="../frontend-dashboards/perfil.html?id=${dev.id}"
+                  style="color:white; text-decoration:none">
+                     ${dev.nombre || dev.usuario}
+                  </a>
+               </h2>
+
+               <p class="usuario-profesion">
+                  ${dev.especialidad || 'Desarrollador'}
+               </p>
+
+               <p class="usuario-estrellas">
+                  ⭐ ${dev.promedio} (${dev.total_calificaciones})
+               </p>
+
+               <button
+               class="btn-mensaje"
+               onclick="abrirModalSolicitud(null, ${dev.id}, '${dev.nombre}')">
+                  Enviar solicitud
+               </button>
+            </div>
+         `
+      })
+
+      iniciarSwiper()
+   })
+}
+
+function iniciarSwiper(){
+   new Swiper('.slider-wrapper', {
+      loop: true,
+      grabCursor: true,
+      spaceBetween: 30,
+      pagination: {
+         el: '.swiper-pagination',
+         clickable: true,
+         dynamicBullets: true,
+      },
+      navigation: {
+         nextEl: '.swiper-button-next',
+         prevEl: '.swiper-button-prev',
+      },
+      breakpoints: {
+         0: { slidesPerView: 1 },
+         620: { slidesPerView: 2 },
+         1024: { slidesPerView: 3 }
+      }
+   })
+}
 
 function cargarAnunciosIndex(){
    fetch('../backend-auth/anuncios/ver-anuncios.php?top=20')
@@ -71,19 +92,38 @@ function cargarAnunciosIndex(){
 
       data.anuncios.forEach(anuncio => {
          lista.innerHTML += `
-            <div class="anuncio-index-card">
+         <div class="anuncio-index-card anuncio-horizontal">
+            <div class="anuncio-info">
                <h2>${anuncio.titulo}</h2>
                <p>${anuncio.descripcion}</p>
-               <p><strong>${anuncio.especialidad}</strong></p>
-               <p>Desde $${anuncio.precio}</p>
-               <p>${Array.isArray(anuncio.lenguajes) ? anuncio.lenguajes.join(', ') : ''}</p>
-               <p>👨‍💻 ${anuncio.dev_nombre}</p>
-
-               <button class="btn btn-azul" onclick="abrirModalSolicitud(${anuncio.id}, ${anuncio.desarrollador_id}, '${anuncio.dev_nombre}')">
+               <p>
+                  <strong>${anuncio.especialidad}</strong>
+               </p>
+               <p>
+                  Desde $${anuncio.precio}
+               </p>
+               <p>
+                  ${
+                     Array.isArray(anuncio.lenguajes)
+                     ? anuncio.lenguajes.join(', ')
+                     : ''
+                  }
+               </p>
+               <p>
+                  👨‍💻 ${anuncio.dev_nombre}
+               </p>
+               <button
+               class="btn btn-azul"
+               onclick="abrirModalSolicitud(${anuncio.id}, ${anuncio.desarrollador_id}, '${anuncio.dev_nombre}')">
                   Enviar solicitud
                </button>
             </div>
-         `
+            <img
+               src="../backend-auth/anuncios/imagen.php?anuncio_id=${anuncio.id}"
+               class="anuncio-img"
+            >
+         </div>
+      `
       })
    })
    .catch(error => {
@@ -108,6 +148,13 @@ function cerrarModalSolicitud(){
 
 function enviarSolicitud(){
    const descripcion = document.getElementById('descripcion-solicitud').value
+   const titulo =
+   document.getElementById('titulo-solicitud').value
+
+   if(!titulo){
+      alert('Escribe un título')
+      return
+   }
 
    if(!descripcion){
       alert('Por favor describe lo que necesitas')
@@ -120,6 +167,7 @@ function enviarSolicitud(){
       body: JSON.stringify({
          anuncio_id: anuncioSeleccionado,
          desarrollador_id: desarrolladorIdSeleccionado,
+         titulo: titulo,
          descripcion: descripcion
       })
    })

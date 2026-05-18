@@ -13,8 +13,8 @@ if(isset($_GET['desarrollador_id'])){
     // Solicitudes recibidas por el desarrollador
     $desarrollador_id = mysqli_real_escape_string($conn, $_GET['desarrollador_id']);
 
-    $query = "SELECT s.id, s.descripcion, s.estado, s.fecha,
-                     u.nombre AS cliente_nombre, u.usuario AS cliente_usuario
+    $query = "SELECT s.id, s.cliente_id, s.titulo, s.descripcion, s.estado, s.fecha,
+       u.nombre AS cliente_nombre, u.usuario AS cliente_usuario
               FROM solicitudes s
               JOIN usuarios u ON s.cliente_id = u.id
               WHERE s.desarrollador_id = '$desarrollador_id'
@@ -24,7 +24,7 @@ if(isset($_GET['desarrollador_id'])){
     // Solicitudes enviadas por el cliente
     $cliente_id = mysqli_real_escape_string($conn, $_GET['cliente_id']);
 
-    $query = "SELECT s.id, s.descripcion, s.estado, s.fecha,
+    $query = "SELECT s.id, s.titulo, s.descripcion, s.estado, s.fecha,
                      u.nombre AS desarrollador_nombre, u.usuario AS desarrollador_usuario
               FROM solicitudes s
               JOIN usuarios u ON s.desarrollador_id = u.id

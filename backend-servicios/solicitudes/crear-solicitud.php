@@ -23,6 +23,11 @@ if(!$datos || !isset($datos['desarrollador_id']) || !isset($datos['descripcion']
     exit;
 }
 
+$titulo = mysqli_real_escape_string(
+    $conn,
+    $datos['titulo']
+);
+
 $cliente_id = $_SESSION['usuario_id'];
 $desarrollador_id = $datos['desarrollador_id'];
 $anuncio_id = $datos['anuncio_id'] ?? null;
@@ -30,8 +35,8 @@ $descripcion = $datos['descripcion'];
 
 $stmt = $conn->prepare("
     INSERT INTO solicitudes
-    (cliente_id, desarrollador_id, anuncio_id, descripcion, estado)
-    VALUES (?, ?, ?, ?, 'pendiente')
+    (cliente_id, desarrollador_id, anuncio_id, titulo, descripcion, estado)
+    VALUES (?, ?, ?, ?, ?, 'pendiente')
 ");
 
 $stmt->bind_param(
@@ -39,6 +44,7 @@ $stmt->bind_param(
     $cliente_id,
     $desarrollador_id,
     $anuncio_id,
+    $titulo,
     $descripcion
 );
 

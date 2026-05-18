@@ -40,10 +40,11 @@ mysqli_query($conn, $update);
 // Si acepta → crear proyecto automáticamente
 if($estado === 'aceptada'){
     $cliente_id  = $solicitud['cliente_id'];
+    $titulo = mysqli_real_escape_string($conn, $solicitud['titulo']);
     $descripcion = mysqli_real_escape_string($conn, $solicitud['descripcion']);
 
-    $proyecto = "INSERT INTO proyectos (solicitud_id, cliente_id, desarrollador_id, nombre, descripcion, estado)
-                 VALUES ('$solicitud_id', '$cliente_id', '$desarrollador_id', 'Nuevo Proyecto', '$descripcion', 'en progreso')";
+    $proyecto = "INSERT INTO proyectos (solicitud_id, cliente_id, desarrollador_id, nombre, descripcion, state)
+                 VALUES ('$solicitud_id', '$cliente_id', '$desarrollador_id', '$titulo', '$descripcion', 'en progreso')";
     mysqli_query($conn, $proyecto);
     $proyecto_id = mysqli_insert_id($conn);
 

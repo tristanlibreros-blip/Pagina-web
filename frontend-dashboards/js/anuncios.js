@@ -117,11 +117,11 @@ function cargarAnunciosDesarrollador(){
         data.anuncios.forEach(anuncio => {
             lista.innerHTML += `
                 <div class="solicitud-card">
+                <div class="solicitud-info">
                 <img 
-                    src="../backend-auth/anuncios/banner.php?anuncio_id=${anuncio.id}" 
+                    src="../backend-auth/anuncios/imagen.php?anuncio_id=${anuncio.id}" 
                     style="display:block; width:100%; height:120px; object-fit:cover; border:3px solid red; border-radius:10px; margin-bottom:10px"
                 >
-                <div class="solicitud-info">
                     <h3>${anuncio.titulo}</h3>
                     <p>${anuncio.especialidad} | Desde $${anuncio.precio}</p>
                     <p style="margin-top:4px; font-size:0.85rem; color:#888">

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChambaTec - Mi Perfil</title>
+    <link rel="stylesheet" href="../frontend-diseño/css/estilos.css">
+</head>
+<body class="perfil-body">
+
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">
+            <a href="../frontend-diseño/index.html">
+                <img src="../frontend-diseño/gato.jpg" alt="ChambaTec">
+            </a>
+        </div>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="../frontend-diseño/index.html">Inicio</a></li>
+                <li id="nav-login" style="display:none"><a href="../frontend-diseño/login.html">Login</a></li>
+                <li id="nav-registro" style="display:none"><a href="../frontend-diseño/registro.html">Registro</a></li>
+                <li id="nav-perfil"><a href="perfil.html" id="nav-nombre">👤 Usuario</a></li>
+                <li id="nav-dashboard"><a href="dashboard.html">Mi cuenta</a></li>
+                <li id="nav-cerrar"><a href="#" onclick="cerrarSesion()">Cerrar sesión</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Banner (solo desarrollador) -->
+    <div class="banner-container" id="banner-container" style="display:none">
+        <img src="" id="banner-img" alt="Banner" style="display:none">
+        <div class="banner-overlay">
+            <button class="btn-cambiar-banner" onclick="document.getElementById('input-banner').click()">
+                🖼 Cambiar banner
+            </button>
+        </div>
+    </div>
+    <input type="file" id="input-banner" accept="image/*" style="display:none" onchange="subirBanner(this)">
+
+    <!-- Header del perfil -->
+    <div class="perfil-header" id="perfil-header">
+        <div style="display:flex; align-items:flex-end; gap:15px; flex-wrap:wrap">
+            <div class="foto-perfil-container" onclick="document.getElementById('input-foto').click()">
+                <div class="foto-perfil" id="foto-placeholder">👤</div>
+                <img src="" id="foto-img" class="foto-perfil-img" style="display:none">
+                <button class="btn-foto" title="Cambiar foto">✏️</button>
+            </div>
+            <div class="perfil-info">
+                <div class="perfil-nombre">
+                    <h1 id="perfil-nombre-titulo">Cargando...</h1>
+                    <p id="perfil-usuario">@usuario</p>
+                    <span class="badge-tipo" id="perfil-badge">...</span>
+                </div>
+                <div id="perfil-stats-dev" style="display:none">
+                    <div class="promedio-stars">
+                        <span class="stars-display" id="stars-promedio">☆☆☆☆☆</span>
+                        <span id="promedio-num" style="font-weight:700; color:#f59e0b">0.0</span>
+                        <span style="color:var(--color-texto-suave); font-size:0.85rem" id="total-califs">(0 reseñas)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <input type="file" id="input-foto" accept="image/*" style="display:none" onchange="subirFoto(this)">
+
+    <!-- Contenido -->
+    <div class="perfil-container">
+
+        <!-- ===== SECCIÓN COMÚN: Datos básicos ===== -->
+        <div class="perfil-card">
+            <h2>👤 Datos Personales</h2>
+            <div class="campo-grupo">
+                <label>Nombre completo</label>
+                <input type="text" id="campo-nombre" placeholder="Tu nombre">
+            </div>
+            <div class="campo-grupo">
+                <label>Usuario</label>
+                <input type="text" id="campo-usuario" readonly>
+            </div>
+            <div class="campo-grupo">
+                <label>Email</label>
+                <input type="email" id="campo-email" readonly>
+            </div>
+            <div class="campo-grupo">
+                <label>Teléfono</label>
+                <input type="text" id="campo-telefono" placeholder="Tu teléfono">
+            </div>
+            <div class="perfil-actions">
+                <button class="btn btn-primario" onclick="guardarDatos()">💾 Guardar cambios</button>
+            </div>
+        </div>
+
+        <!-- ===== SECCIÓN DESARROLLADOR: Stats ===== -->
+        <div class="perfil-card" id="card-stats" style="display:none">
+            <h2>📊 Mis Estadísticas</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-numero" id="stat-proyectos">0</div>
+                    <div class="stat-label">Proyectos completados</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-numero" id="stat-califs">0</div>
+                    <div class="stat-label">Calificaciones</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-numero" id="stat-promedio">0.0</div>
+                    <div class="stat-label">Promedio ⭐</div>
+                </div>
+            </div>
+            <div class="mini-reviews">
+                <h3>💬 Comentarios recibidos</h3>
+                <div id="review-card">
+                    <p>Cargando comentarios...</p>
+                </div>
+                <div class="review-botones">
+                    <button class="btn btn-gris" onclick="cambiarReview(-1)">Anterior</button>
+                    <button class="btn btn-gris" onclick="cambiarReview(1)">Siguiente</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== SECCIÓN CLIENTE: Proyectos recientes ===== -->
+        <div class="perfil-card" id="card-proyectos-cliente" style="display:none">
+            <h2>📁 Mis Proyectos Recientes</h2>
+            <div id="lista-proyectos-recientes">
+                <p style="color:var(--color-texto-suave); text-align:center; padding:20px">
+                    Cargando proyectos...
+                </p>
+            </div>
+            <a href="dashboard.html" style="display:block; text-align:center; margin-top:10px; color:blue; font-size:0.9rem">
+                Ver todos →
+            </a>
+        </div>
+
+        <!-- ===== SECCIÓN DESARROLLADOR: Perfil profesional ===== -->
+        <div class="perfil-card full-width" id="card-profesional" style="display:none">
+            <h2>💼 Perfil Profesional</h2>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px">
+                <div class="campo-grupo">
+                    <label>Especialidad principal</label>
+                    <select id="campo-especialidad">
+                        <option value="">Selecciona...</option>
+                        <option value="Web">Desarrollo Web</option>
+                        <option value="Mobile">Desarrollo Mobile</option>
+                        <option value="Backend">Backend</option>
+                        <option value="Frontend">Frontend</option>
+                        <option value="FullStack">Full Stack</option>
+                        <option value="E-commerce">E-commerce</option>
+                        <option value="UI/UX">UI/UX</option>
+                        <option value="Data">Data / IA</option>
+                    </select>
+                </div>
+                <div class="campo-grupo">
+                    <label>Años de experiencia</label>
+                    <input type="number" id="campo-experiencia" placeholder="Ej: 3" min="0" max="50">
+                </div>
+            </div>
+            <div class="campo-grupo">
+                <label>Descripción / Sobre mí</label>
+                <textarea id="campo-descripcion" placeholder="Cuéntale a los clientes sobre ti, tu experiencia y qué tipo de proyectos haces..." rows="4"></textarea>
+            </div>
+            <div class="campo-grupo">
+                <label>Lenguajes y tecnologías</label>
+                <div class="lenguajes-grid" id="lenguajes-grid"></div>
+            </div>
+            <div class="perfil-actions" style="margin-top:15px">
+                <button class="btn btn-primario" onclick="guardarPerfil()">💾 Guardar perfil</button>
+            </div>
+        </div>
+
+        <!-- ===== SECCIÓN DESARROLLADOR: Certificaciones ===== -->
+        <div class="perfil-card full-width" id="card-certificaciones" style="display:none">
+            <h2>🎓 Certificaciones y Estudios</h2>
+            <div id="lista-certificaciones"></div>
+            <button class="btn-add-cert" onclick="abrirModalCert()">+ Agregar certificación</button>
+        </div>
+
+        <!-- ===== SECCIÓN CLIENTE: Sobre mí ===== -->
+        <div class="perfil-card full-width" id="card-cliente-desc" style="display:none">
+            <h2>📝 Sobre mí</h2>
+            <div class="campo-grupo">
+                <label>¿Qué tipo de proyectos buscas?</label>
+                <textarea id="campo-desc-cliente" placeholder="Cuéntanos qué tipo de proyectos sueles buscar..." rows="3"></textarea>
+            </div>
+            <div class="perfil-actions">
+                <button class="btn btn-primario" onclick="guardarDescCliente()">💾 Guardar</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Modal certificación -->
+    <div class="modal-fondo" id="modal-cert">
+        <div class="modal-cert">
+            <h2>🎓 Agregar Certificación</h2>
+            <div class="campo-grupo">
+                <label>Nombre del certificado</label>
+                <input type="text" id="cert-nombre" placeholder="Ej: Certificado en React">
+            </div>
+            <div class="campo-grupo">
+                <label>Institución</label>
+                <input type="text" id="cert-institucion" placeholder="Ej: Udemy, Coursera, UNAM">
+            </div>
+            <div class="campo-grupo">
+                <label>Año</label>
+                <input type="number" id="cert-año" placeholder="2024" min="2000" max="2030">
+            </div>
+            <div class="modal-botones">
+                <button class="btn btn-primario" onclick="agregarCert()">Agregar</button>
+                <button class="btn btn-gris" onclick="cerrarModalCert()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/perfil.js"></script>
+    <script src="../frontend-diseño/js/navbar.js"></script>
+</body>
+</html>

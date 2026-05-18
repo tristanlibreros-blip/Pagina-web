@@ -80,8 +80,13 @@ function cargarSolicitudesDesarrollador(){
                 return `
                     <div class="solicitud-card" data-id="${sol.id}">
                         <div class="solicitud-info">
+                            <h1>
+                                ${sol.titulo}
+                            </h1>
                             <h3>
-                                ${sol.cliente_nombre}
+                                <a href="perfil.html?id=${sol.cliente_id}" style="color:blue; text-decoration:none">
+                                    ${sol.cliente_nombre}
+                                </a>
                             </h3>
                             <p>
                                 ${sol.descripcion}

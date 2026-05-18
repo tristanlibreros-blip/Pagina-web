@@ -1,5 +1,4 @@
 <?php
-// banner.php
 // GET ?anuncio_id=X → devuelve la imagen del banner
 // GET ?usuario_id=X → devuelve la foto de perfil
 
