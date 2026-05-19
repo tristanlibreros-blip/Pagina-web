@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
 })
 
 function cargarNavbar(){
-    fetch('/Pagina%20web/backend-auth/auth/sesion.php', {
+    fetch('../backend-auth/auth/sesion.php', {
         credentials: 'include'
     })
     .then(res => res.json())
@@ -38,13 +38,13 @@ function cargarNavbar(){
 }
 
 function cerrarSesion(){
-    fetch('/Pagina%20web/backend-auth/auth/cerrar_sesion.php', {
+    fetch('../backend-auth/auth/cerrar_sesion.php', {
         credentials: 'include'
     })
     .then(res => res.json())
     .then(data => {
         if(data.success){
-            window.location = '/Pagina%20web/frontend-diseño/index.html'
+            window.location = '../frontend-diseño/index.html'
         }
     })
 }
