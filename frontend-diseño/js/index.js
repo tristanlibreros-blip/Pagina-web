@@ -110,7 +110,12 @@ function cargarAnunciosIndex(){
                   }
                </p>
                <p>
-                  👨‍💻 ${anuncio.dev_nombre}
+                  👨‍💻
+                  <a
+                  href="../frontend-dashboards/perfil.html?id=${anuncio.desarrollador_id}"
+                  style="color:blue; text-decoration:none">
+                     ${anuncio.dev_nombre}
+                  </a>
                </p>
                <button
                class="btn btn-azul"
