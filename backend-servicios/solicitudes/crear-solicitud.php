@@ -40,7 +40,7 @@ $stmt = $conn->prepare("
 ");
 
 $stmt->bind_param(
-    "iiis",
+    "iiiss",
     $cliente_id,
     $desarrollador_id,
     $anuncio_id,

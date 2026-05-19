@@ -28,7 +28,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
 
     $query = "SELECT u.id, u.nombre, u.usuario, u.email, u.telefono, u.tipo, u.fecha_registro,
                      (u.foto_perfil IS NOT NULL AND u.foto_perfil != '') AS tiene_foto,
-                     p.especialidad, p.lenguajes, p.descripcion, p.certificaciones, p.experiencia,
+                     p.especialidad, p.lenguajes, p.descripcion, p.certificaciones, p.experiencia,p.github,
                      (p.banner IS NOT NULL AND p.banner != '') AS tiene_banner,
                      COALESCE(AVG(c.estrellas), 0) AS promedio_estrellas,
                      COUNT(c.id) AS total_calificaciones
@@ -86,6 +86,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
         $descripcion     = mysqli_real_escape_string($conn, $_POST['descripcion'] ?? '');
         $lenguajes       = mysqli_real_escape_string($conn, $_POST['lenguajes'] ?? '[]');
         $certificaciones = mysqli_real_escape_string($conn, $_POST['certificaciones'] ?? '[]');
+        $github = mysqli_real_escape_string($conn, $_POST['github'] ?? '');
 
         // Verificar si ya tiene perfil
         $check = mysqli_query($conn, "SELECT id FROM perfiles_desarrollador WHERE usuario_id = '$id'");
@@ -96,12 +97,13 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
                 experiencia = '$experiencia',
                 descripcion = '$descripcion',
                 lenguajes = '$lenguajes',
-                certificaciones = '$certificaciones'
+                certificaciones = '$certificaciones',
+                github = '$github'
                 WHERE usuario_id = '$id'");
         } else {
             mysqli_query($conn, "INSERT INTO perfiles_desarrollador
-                (usuario_id, especialidad, experiencia, descripcion, lenguajes, certificaciones)
-                VALUES ('$id', '$especialidad', '$experiencia', '$descripcion', '$lenguajes', '$certificaciones')");
+                (usuario_id, especialidad, experiencia, descripcion, lenguajes, certificaciones, github)
+                VALUES ('$id', '$especialidad', '$experiencia', '$descripcion', '$lenguajes', '$certificaciones', '$github')");
         }
 
         // Banner del perfil
@@ -125,11 +127,12 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
     // Descripción del cliente
     if($tipo === 'cliente'){
         $descripcion = mysqli_real_escape_string($conn, $_POST['descripcion'] ?? '');
+        $github = mysqli_real_escape_string($conn, $_POST['github'] ?? '');
         $check = mysqli_query($conn, "SELECT id FROM perfiles_desarrollador WHERE usuario_id = '$id'");
         if(mysqli_num_rows($check) > 0){
-            mysqli_query($conn, "UPDATE perfiles_desarrollador SET descripcion = '$descripcion' WHERE usuario_id = '$id'");
+            mysqli_query($conn, "UPDATE perfiles_desarrollador SET descripcion = '$descripcion', github = '$github' WHERE usuario_id = '$id'");
         } else {
-            mysqli_query($conn, "INSERT INTO perfiles_desarrollador (usuario_id, descripcion) VALUES ('$id', '$descripcion')");
+            mysqli_query($conn, "INSERT INTO perfiles_desarrollador (usuario_id, descripcion, github) VALUES ('$id', '$descripcion', '$github')");
         }
     }
 

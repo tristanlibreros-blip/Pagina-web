@@ -80,7 +80,24 @@ function mostrarPerfil(perfil){
     }
     if(!esMiPerfil){
     bloquearEdicionPerfil()
+    document.getElementById('github-input').style.display = 'none'
     }
+    if(perfil.github){
+    document.getElementById('github-preview').innerHTML = `
+        <a
+        href="${perfil.github}"
+        target="_blank"
+        class="github-btn">
+
+            <img
+            src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg"
+            width="24">
+
+            GitHub
+
+        </a>
+    `
+}
 }
 
 function bloquearEdicionPerfil(){
@@ -89,7 +106,7 @@ function bloquearEdicionPerfil(){
     })
 
     document.querySelectorAll(
-        '.perfil-actions, .btn-foto, .btn-cambiar-banner, .btn-add-cert'
+        '.perfil-actions, .btn-foto, .btn-cambiar-banner, .btn-add-cert, .link-ver-todos'
     ).forEach(el => {
         el.style.display = 'none'
     })
@@ -175,14 +192,17 @@ function mostrarSeccionesCliente(perfil){
             lista.innerHTML = '<p style="color:var(--color-texto-suave); text-align:center; padding:15px">Sin proyectos aún 😊</p>'
             return
         }
-        lista.innerHTML = data.proyectos.slice(0, 3).map(p => `
+        lista.innerHTML = data.proyectos.slice(0, 5).map(p => `
             <div class="proyecto-item">
                 <div>
                     <strong>${p.nombre}</strong>
                     <p style="font-size:0.85rem; color:var(--color-texto-suave)">${p.desarrollador_nombre}</p>
                 </div>
-                <span class="badge badge-${p.estado === 'en progreso' ? 'progreso' : p.estado === 'terminado' ? 'terminado' : 'pendiente'}">
+                <span class="badge badge-${p.estado === 'en progreso' ? 'progreso' : p.estado === 'terminado' ? 'terminado' : 'cancelado'}">
                     ${p.estado}
+                </span>
+                <span class="badge badge-${p.estado === 'cancelado' ? 'cancelado' : 'progreso'}">
+                    ${p.estado === 'cancelado' ? (p.razon_cancelacion ? 'Razón: ' + p.razon_cancelacion : 'Proyecto cancelado ❌') : ''}
                 </span>
             </div>
         `).join('')
@@ -195,9 +215,14 @@ function generarChipsLenguajes(){
     grid.innerHTML = ''
     lenguajesDisponibles.forEach(lang => {
         const chip = document.createElement('span')
-        chip.className = 'lang-chip' + (lenguajesSeleccionados.includes(lang) ? ' activo' : '')
+        chip.className =
+        'lang-chip' + (lenguajesSeleccionados.includes(lang) ? ' activo' : '')
         chip.textContent = lang
-        chip.onclick = () => toggleLenguaje(chip, lang)
+        if(esMiPerfil){
+            chip.onclick = () => toggleLenguaje(chip, lang)
+        } else {
+            chip.style.cursor = 'default'
+        }
         grid.appendChild(chip)
     })
 }
@@ -312,6 +337,7 @@ function guardarPerfil(silencioso = false){
     formData.append('descripcion', descripcion)
     formData.append('lenguajes', JSON.stringify(lenguajesSeleccionados))
     formData.append('certificaciones', JSON.stringify(certificaciones))
+    formData.append('github', document.getElementById('github-input').value)
 
     fetch('../backend-auth/auth/perfil.php', {
         method: 'POST',
@@ -439,6 +465,7 @@ function mostrarReview(){
 
     contenedor.innerHTML = `
         <div class="review-item">
+            <h1>${r.proyecto_nombre}</h1>
             <p style="font-size:1.3rem">${'⭐'.repeat(r.estrellas)}</p>
             <p>"${r.comentario}"</p>
             <p><strong>${r.cliente_nombre}</strong></p>

@@ -22,7 +22,7 @@
                     <a href="perfil.html" id="nav-nombre">👤 Usuario</a>
                 </li>
                 <li id="nav-dashboard" style="display:none">
-                    <a href="dashboard.html">Mi cuenta</a>
+                    <a href="dashboard.html">Proyectos</a>
                 </li>
                 <li id="nav-cerrar" style="display:none">
                     <a href="#" onclick="cerrarSesion()">Cerrar sesión</a>
@@ -172,6 +172,39 @@
             </div>
         </div>
     </div>
+    <div class="modal-fondo" id="modal-finalizar">
+            <div class="modal">
+                <h2>Finalizar proyecto</h2>
+
+                <input type="hidden" id="finalizar-proyecto-id">
+
+                <label>Archivo final</label>
+                <input type="file" id="archivo-final">
+
+                <label>Link de página web</label>
+                <input type="text" id="link-final" placeholder="https://... opcional">
+
+                <div class="modal-botones">
+                    <button class="btn btn-verde" onclick="confirmarFinalizarProyecto()">Finalizar</button>
+                    <button class="btn btn-gris" onclick="cerrarModalFinalizar()">Cancelar</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-fondo" id="modal-cancelar">
+            <div class="modal">
+                <h2>Cancelar proyecto</h2>
+
+                <input type="hidden" id="cancelar-proyecto-id">
+
+                <textarea id="razon-cancelacion" placeholder="Explica la razón de cancelación..."></textarea>
+
+                <div class="modal-botones">
+                    <button class="btn btn-rojo" onclick="confirmarCancelarProyecto()">Cancelar proyecto</button>
+                    <button class="btn btn-gris" onclick="cerrarModalCancelar()">Cerrar</button>
+                </div>
+            </div>
+        </div>
 
     <script src="js/dashboard.js"></script>
     <script src="js/solicitudes.js"></script>

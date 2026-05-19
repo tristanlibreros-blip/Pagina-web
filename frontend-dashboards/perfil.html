@@ -21,7 +21,7 @@
                 <li id="nav-login" style="display:none"><a href="../frontend-diseño/login.html">Login</a></li>
                 <li id="nav-registro" style="display:none"><a href="../frontend-diseño/registro.html">Registro</a></li>
                 <li id="nav-perfil"><a href="perfil.html" id="nav-nombre">👤 Usuario</a></li>
-                <li id="nav-dashboard"><a href="dashboard.html">Mi cuenta</a></li>
+                <li id="nav-dashboard"><a href="dashboard.html">Proyectos</a></li>
                 <li id="nav-cerrar"><a href="#" onclick="cerrarSesion()">Cerrar sesión</a></li>
             </ul>
         </nav>
@@ -128,7 +128,7 @@
                     Cargando proyectos...
                 </p>
             </div>
-            <a href="dashboard.html" style="display:block; text-align:center; margin-top:10px; color:blue; font-size:0.9rem">
+            <a href="dashboard.html" class="link-ver-todos" style="display:block; text-align:center; margin-top:10px; color:blue; font-size:0.9rem">
                 Ver todos →
             </a>
         </div>
@@ -163,6 +163,14 @@
             <div class="campo-grupo">
                 <label>Lenguajes y tecnologías</label>
                 <div class="lenguajes-grid" id="lenguajes-grid"></div>
+            </div>
+            <div class="campo-grupo">
+                <label>GitHub</label>
+                <input
+                type="text"
+                id="github-input"
+                placeholder="https://github.com/usuario">
+                <div id="github-preview"></div>
             </div>
             <div class="perfil-actions" style="margin-top:15px">
                 <button class="btn btn-primario" onclick="guardarPerfil()">💾 Guardar perfil</button>

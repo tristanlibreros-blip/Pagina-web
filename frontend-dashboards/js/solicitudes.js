@@ -20,11 +20,11 @@ function responderSolicitud(boton, respuesta, solicitudId){
             if(respuesta === 'aceptada'){
                 card.querySelector('.solicitud-botones').innerHTML =
                     `<span class="badge badge-aceptada">Aceptada ✅</span>`
-                alert(`✅ Solicitud de ${nombre} aceptada`)
+                alert(`✅ Solicitud aceptada`)
             } else {
                 card.querySelector('.solicitud-botones').innerHTML =
                     `<span class="badge badge-rechazada">Rechazada ❌</span>`
-                alert(`❌ Solicitud de ${nombre} rechazada`)
+                alert(`❌ Solicitud rechazada`)
             }
         } else {
             alert(data.mensaje || 'Error al responder la solicitud')

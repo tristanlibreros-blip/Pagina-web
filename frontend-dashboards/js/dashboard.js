@@ -192,10 +192,26 @@ function cargarProyectosDesarrollador(){
                         : `<p class="proyecto-info">Aún no has subido archivos</p>`
                     }
                     ${
-                        proj.estado === 'terminado'
+                            proj.link_final
+                            ? `
+                                <p class="proyecto-info">
+                                    🌐 Link final:
+                                    <a href="${proj.link_final}" target="_blank">
+                                        ${proj.link_final}
+                                    </a>
+                                </p>
+                            `
+                            : ''
+                        }
+                    ${
+                        proj.estado === 'terminado' || proj.estado === 'cancelado'
                         ? `
-                            <p class="badge badge-terminado">
-                                Proyecto terminado ✅
+                            <p class="badge badge-${proj.estado}">
+                                ${
+                                    proj.estado === 'terminado'
+                                    ? 'Proyecto terminado ✅'
+                                    : 'Proyecto cancelado ❌'
+                                }
                             </p>
                           `
                         : `
@@ -210,8 +226,13 @@ function cargarProyectosDesarrollador(){
 
                             <button
                             class="btn btn-verde"
-                            onclick="finalizarProyecto(${proj.id})">
+                            onclick="abrirModalFinalizar(${proj.id})">
                                 Finalizar proyecto
+                            </button>
+
+                            <button class="btn btn-rojo" 
+                            onclick="abrirModalCancelar(${proj.id})">
+                                Cancelar proyecto
                             </button>
                         </div>
                           `
@@ -367,6 +388,27 @@ function cargarProyectosCliente(){
                                     Sin archivos aún
                                 </p>
                               `
+                        }
+                        ${
+                            proj.estado === 'cancelado'
+                            ? `
+                                <p class="badge badge-rechazada">
+                                    ${proj.razon_cancelacion ? 'Razón: ' + proj.razon_cancelacion : 'Proyecto cancelado ❌'}
+                                </p>
+                              `
+                            : ''
+                        }
+                        ${
+                            proj.link_final
+                            ? `
+                                <p class="proyecto-info">
+                                    🌐 Link final:
+                                    <a href="${proj.link_final}" target="_blank">
+                                        ${proj.link_final}
+                                    </a>
+                                </p>
+                            `
+                            : ''
                         }
                     </div>
                 `
@@ -526,4 +568,92 @@ function cambiarPagina(contenedorId, cambio){
 
         </div>
     `
+}
+function abrirModalFinalizar(proyectoId){
+    document.getElementById('finalizar-proyecto-id').value = proyectoId
+    document.getElementById('archivo-final').value = ''
+    document.getElementById('link-final').value = ''
+    document.getElementById('modal-finalizar').classList.add('activo')
+}
+
+function cerrarModalFinalizar(){
+    document.getElementById('modal-finalizar').classList.remove('activo')
+}
+
+function confirmarFinalizarProyecto(){
+    const proyectoId = document.getElementById('finalizar-proyecto-id').value
+    const archivo = document.getElementById('archivo-final').files[0]
+    const link = document.getElementById('link-final').value
+
+    if(!archivo){
+        alert('Selecciona el archivo final')
+        return
+    }
+
+    const formData = new FormData()
+    formData.append('proyecto_id', proyectoId)
+    formData.append('archivo_final', archivo)
+    formData.append('link_final', link)
+
+    fetch('../backend-servicios/proyectos/finalizar-proyecto.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(async res => {
+    const texto = await res.text()
+    console.log(texto)
+    return JSON.parse(texto)
+})
+    .then(data => {
+        if(data.success){
+            alert('Proyecto finalizado ✅')
+            cerrarModalFinalizar()
+            cargarProyectosDesarrollador()
+        } else {
+            alert(data.mensaje)
+        }
+    })
+    .catch(error => {
+        console.error(error)
+        alert('Error de conexión')
+    })
+}
+
+function abrirModalCancelar(proyectoId){
+    document.getElementById('cancelar-proyecto-id').value = proyectoId
+    document.getElementById('razon-cancelacion').value = ''
+    document.getElementById('modal-cancelar').classList.add('activo')
+}
+
+function cerrarModalCancelar(){
+    document.getElementById('modal-cancelar').classList.remove('activo')
+}
+
+function confirmarCancelarProyecto(){
+    const proyectoId = document.getElementById('cancelar-proyecto-id').value
+    const razon = document.getElementById('razon-cancelacion').value
+
+    if(!razon){
+        alert('Escribe la razón de cancelación')
+        return
+    }
+
+    fetch('../backend-servicios/proyectos/cancelar-proyecto.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            proyecto_id: proyectoId,
+            razon: razon
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if(data.success){
+            alert('Proyecto cancelado')
+            cerrarModalCancelar()
+            cargarProyectosDesarrollador()
+        } else {
+            alert(data.mensaje)
+        }
+    })
 }
